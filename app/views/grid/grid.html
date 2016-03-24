@@ -1,0 +1,25 @@
+<div class="tm-grid">
+
+    <div class="tm-grid-y-axis">
+        <div class="tm-grid-y-item" ng-repeat="entity in data" style="min-height: {{entity.schedules.length * cellHeight}}px">{{entity.name}}</div>
+    </div>
+
+    <div class="tm-grid-x-axis">
+        <div class="day-labels"></div>
+        <div class="time-labels"></div>
+    </div>
+
+    <div class="tm-grid-body">
+        <div class="tm-grid-ranges-wrapper">
+            <div class="tm-grid-ruler"></div>
+
+            <div class="tm-grid-entity" ng-repeat="entity in data">
+
+                <div class="tm-grid-schedules" ng-repeat="schedule in entity.schedules">
+                    <tm-range ng-repeat="range in schedule.ranges"></tm-range>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

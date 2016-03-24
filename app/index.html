@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="timeManager">
+<head>
+    <meta charset="UTF-8">
+    <title>Time Manager</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+    <div class="container-fluid" ng-controller="tmpCtrl">
+        <div class="row">
+            <div class="col-xs-12">
+                <button ng-click="switchSamples()">Switch Samples</button>
+                <button ng-click="switchZoom()">Switch Zoom</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <tm-grid
+                    grid-data="sampleData"
+                    dates="dates"
+                    view-mode="viewMode"
+                ></tm-grid>
+            </div>
+        </div>
+    </div>
+
+    <script src="lib/lib.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

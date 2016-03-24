@@ -1,0 +1,106 @@
+$cell-border-color: #ccc;
+$y-axis-col-width: 15%;
+$range-height: 20px;
+
+// Grid
+.tm-grid {
+    @extend .clearfix;
+
+    &.scrollable .tm-grid-body {
+        overflow-x: scroll;
+
+    }
+}
+
+// X Axis
+.tm-grid-x-axis {
+    @extend .clearfix;
+    float: left;
+    width: 100% - $y-axis-col-width;
+    overflow: hidden;
+
+    .time-labels {
+        @extend .clearfix;
+    }
+}
+
+.tm-grid-time-label {
+    float: left;
+    text-align: center;
+    border: 1px solid $cell-border-color;
+    border-left-style: none;
+
+    &:first-child {
+        border-left-style: solid;
+    }
+}
+
+// Y Axis
+.tm-grid-y-axis {
+    float: left;
+    width: $y-axis-col-width;
+    margin-top: 22px;
+    height: 700px;
+    overflow-y: hidden;
+}
+
+.tm-grid-y-item {
+    border: 2px solid  #ccc;
+    box-sizing: content-box;
+}
+
+// Grid body
+.tm-grid-body {
+    float: left;
+    width: 100% - $y-axis-col-width;
+    height: 700px;
+    overflow-y: scroll;
+    position: relative;
+}
+
+// Ruler
+.tm-grid-ruler {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+
+    .tm-ruler-item {
+        float: left;
+        text-align: center;
+        height: 100%;
+        border: 1px solid $cell-border-color;
+        border-left-style: none;
+        border-top: none;
+
+        &:first-child {
+            border-left-style: solid;
+        }
+    }
+}
+
+// Ranges
+.tm-grid-ranges-wrapper {
+    position: relative;
+}
+
+.tm-grid-entity {
+    border: 2px solid  #ccc;
+    border-left: none;
+    border-right: none;
+}
+
+.tm-grid-schedules {
+    position: relative;
+    height: $range-height;
+}
+
+.tm-grid-range {
+    position: absolute;
+    background-color: #539e2e;
+    top: 0;
+    border: 1px solid  #000;
+    height: $range-height - 5;
+    font-size: 10px;
+}
