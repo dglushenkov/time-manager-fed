@@ -14,6 +14,11 @@ angular.module('gridModule')
         replace: true,
         templateUrl: 'views/grid/grid.html',
         link: function(scope, iElement) {
+            gridHelper.parseRangeDatesExpr('123', {
+                from: new Date(2016, 3, 20),
+                to: new Date(2016, 3, 26)
+            })
+
             scope.cellHeight = gridConstants.CELL_HEIGHT;
 
             scope.$watchGroup(['dates', 'viewMode'], function() {
@@ -36,17 +41,16 @@ angular.module('gridModule')
 
                     iElement.find(
                         '.tm-grid-x-axis .time-labels, ' +
-                        '.tm-grid-x-axis .day-labels, ' +
-                        '.tm-grid-ranges-wrapper'
-                        )
+                        '.tm-grid-x-axis .day-labels'
+                        ).width(fullWidth + gridHelper.getScrollbarWidth());
+                    iElement.find('.tm-grid-ranges-wrapper')
                         .width(fullWidth);
                 } else {
                     iElement.find(
                         '.tm-grid-x-axis .time-labels, ' +
                         '.tm-grid-x-axis .day-labels, ' +
                         '.tm-grid-ranges-wrapper'
-                        )
-                        .width('');
+                        ).width('');
                 }
 
                 iElement.toggleClass('scrollable', scope.viewMode.isScrollable);
@@ -64,10 +68,21 @@ angular.module('gridModule')
             }
 
             function initRulers() {
+
+                var scrollbarWidth = gridHelper.getScrollbarWidth();
+                iElement.find('.tm-grid-x-axis').css({
+                    'padding-right': scrollbarWidth + 'px'
+                });
+                iElement.find('.tm-grid-y-axis').css({
+                    'padding-bottom': scrollbarWidth + 'px'
+                });
+
                 var rulerContainer = iElement.find('.tm-grid-ruler')
-                    .html('');
+                    .html('')
+                    .css('min-height', iElement.find('.tm-grid-body').height() - scrollbarWidth);
                 var timeLabelsContainer = iElement.find('.tm-grid-x-axis .time-labels')
                     .html('');
+
                 var interval = 3600000 * scope.viewMode.hoursPerCell;
                 var datesDiff = scope.dates.to - scope.dates.from;
 

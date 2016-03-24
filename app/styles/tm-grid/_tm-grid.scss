@@ -6,7 +6,7 @@ $range-height: 20px;
 .tm-grid {
     @extend .clearfix;
 
-    &.scrollable .tm-grid-body {
+    .tm-grid-body {
         overflow-x: scroll;
 
     }
@@ -64,7 +64,7 @@ $range-height: 20px;
     left: 0;
     right: 0;
     top: 0;
-    bottom: 0;
+    height: 100%;
 
     .tm-ruler-item {
         float: left;
