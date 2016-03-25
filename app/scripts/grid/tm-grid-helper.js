@@ -71,6 +71,8 @@ angular.module('gridModule')
             // Every Mn Ts Wd Th Fr in 2016 from 11:00 and duration 05:30
             } else {
                 var conditions = {};
+                var startHhmm = rangeExprParts[1].split(':');
+                var durationHhmm = rangeExprParts[2].split(':');
 
                 // If there are period conditions
                 if (rangeExprParts[0]) {
@@ -92,20 +94,26 @@ angular.module('gridModule')
                 }
 
                 // Get all ranges that fits conditions and grid datetime interval 
-                var range = getNextRange(conditions, gridDates.from, gridDates.to);
-                while (range) {
+                var rangeStart = getNextStart(conditions, gridDates.from, gridDates.to);
+                while (rangeStart) {
+
+                    var range = {};
+                    range.from = rangeStart.setHours(+startHhmm[0], +startHhmm[1]);
+                    range.to = new Date(range.from.getTime());
+                    range.to.setHours(+durationHhmm[0], +durationHhmm[1]);
+
                     ranges.push(range);
-                    range = getNextRange(conditions, range.to, gridDates.to);
+                    var newStart = new Date(range.to);
+                    rangeStart = getNextStart(conditions, newStart, gridDates.to);
                 }
             }
 
             return ranges;
 
-            function getNextRange(conditions, from, to) {
+            function getNextStart(conditions, from, to) {
                 var date = new Date(from.getTime());
 
                 while(date < to) {
-
                     // Check year
                     if (conditions.y) {
                         if (!checkCondition(date.getFullYear(), condition.y.operator, condition.y.value)) {
@@ -124,35 +132,67 @@ angular.module('gridModule')
                         }
                     }
 
-                    // Check week number from year start
+                    // Check week number in year
                     if (conditions.w) {
-                        if (!checkCondition(getWeekInYear(date), condition.w.operator, condition.w.value)) {
+                        if (!checkCondition(getWeek(date), condition.w.operator, condition.w.value)) {
                             date.setDate(date.getDate() + 7 - date.getDay());
                             date.setHours(0, 0);
                             continue;
                         }
                     }
 
-                    // Check week number from year start
+                    // Check week number in month
                     if (conditions.wm) {
-                        if (!checkCondition(getWeekInYear(date), condition.w.operator, condition.w.value)) {
+                        if (!checkCondition(getWeek(date, true), condition.wm.operator, condition.wm.value)) {
                             date.setDate(date.getDate() + 7 - date.getDay());
                             date.setHours(0, 0);
                             continue;
                         }
                     }
 
+                    // Check day in year
+                    if (condition.dy){
+                        if (!checkCondition(getDateInYear(date), condition.dy.operator, condition.dy.value)) {
+                            date.setDate(date.getDate() + 1);
+                            date.setHours(0, 0);
+                            continue;
+                        }
+                    }
 
+                    // Check day in week
+                    if (condition.dw){
+                        if (!checkCondition(date.getDay(), condition.dw.operator, condition.dw.value)) {
+                            date.setDate(date.getDate() + 1);
+                            date.setHours(0, 0);
+                            continue;
+                        }
+                    }
 
+                    // Check date
+                    if (condition.d){
+                        if (!checkCondition(date.getDate(), condition.d.operator, condition.d.value)) {
+                            date.setDate(date.getDate() + 1);
+                            date.setHours(0, 0);
+                            continue;
+                        }
+                    }
 
-                    return;
+                    return date;
                 }
             }
 
-            function getWeekInYear(date) {
+            function getWeek(date, inMonth) {
                 var firstWeek = new Date(date.getFullYear(), 0, 1);
+                if (inMonth) {
+                    firstWeek.setMonth(date.getMonth());
+                }
                 firstWeek.setDate(-firstWeek.getDay());
                 return Math.ceil((date - firstWeek) / 604800000) + 1;
+            }
+
+            function getDateInYear(date) {
+                var yearStart = new Date(date.getFullYear(), 0, 1);
+                return Math.ceil((date - yearStart) / 86400000) + 1;
             }
 
             function checkCondition(value, operator, compareWith) {
