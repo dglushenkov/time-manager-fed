@@ -11,7 +11,7 @@ angular.module('gridModule')
         link: function(scope, iElement) {
             var elementSize = gridHelper.getRangeItemSize(
                 scope.dates, 
-                gridHelper.parseTimeRange(scope.range)
+                gridHelper.parseRangeDatesExpr(scope.range, scope.dates)
             );
 
             iElement.css({

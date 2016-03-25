@@ -14,10 +14,9 @@ angular.module('gridModule')
         replace: true,
         templateUrl: 'views/grid/grid.html',
         link: function(scope, iElement) {
-            gridHelper.parseRangeDatesExpr('123', {
-                from: new Date(2016, 3, 20),
-                to: new Date(2016, 3, 26)
-            })
+            console.log(gridHelper.parseRangeDatesExpr('2012.03.02.10:53-14:53', scope.dates));
+
+            console.log({a:, b:});
 
             scope.cellHeight = gridConstants.CELL_HEIGHT;
 
@@ -68,7 +67,6 @@ angular.module('gridModule')
             }
 
             function initRulers() {
-
                 var scrollbarWidth = gridHelper.getScrollbarWidth();
                 iElement.find('.tm-grid-x-axis').css({
                     'padding-right': scrollbarWidth + 'px'

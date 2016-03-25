@@ -6,6 +6,11 @@ angular.module('timeManager', ['gridModule'])
 
         $http.get('api/entities.json').
             success(function(response) {
+                var res = response;
+                for (var i = 0; i < 500; i++) {
+                    response
+                }
+
                 $scope.sampleData = response;
         });
 

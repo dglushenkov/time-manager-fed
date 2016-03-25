@@ -1,5 +1,5 @@
 angular.module('gridModule')
-.factory('gridHelper', [function() {
+.factory('gridHelper', ['gridConstants', function(gridConstants) {
     return {
         timeToHhmm: function(time) {
             return ('0' + time.getHours()).slice(-2) + ':' 
@@ -43,13 +43,137 @@ angular.module('gridModule')
             return widthNoScroll - widthWithScroll;
         },
 
+        // Parse range string to range dates object
         parseRangeDatesExpr: function(rangeExpr, gridDates) {
-            // Not a string
-            if (!rangeExpr || !(typeof rangeExpr == 'string')) return;
+            var rangeExprParts = rangeExpr.split('-');
+            var ranges = [];
 
-            var regex = /^\s*(\(\s*((20\d{2}-[01]\d-[0-3]\d)|(((y|m|w|wm|d|dw|dy)(((<|>|=|\/)\d{1,4})|(=\d{1,4}(,\d{1,4})+)))(\s+(y|m|w|wm|d|dw|dy)(((<|>|=|\/)\d{1,4})|(=\d{1,4}(,\d{1,4})+))){0,6}))\s*\)\s*)?([0-2]\d:[0-5]\d)\s*-\s*(((20\d{2}-[01]\d-[0-3]\d)\s+([02]\d:[0-5]\d))|((([02]\d:[0-5]\d)|(\d{1,4})(:([0-5]\d))?(h))))(\s*)$/;
+            // RangeExpr is not periodical
+            // E.g. 2016.03.02.13:00-05:30
+            // 2 March 2016 from 13.00 and duration 5:30h
+            if (rangeExprParts.length == 2) {
+                var range = {};
+                range.from = new Date(rangeExprParts[0]);
+                range.to = new Date(range.from.getTime());
+                var hhmm = rangeExprParts[1].split(':');
+                range.to.setHours(+hhmm[0], +hhmm[1]);
 
-            console.log(regex);
+                // Check if end time fits grid date span
+                if (range.to > gridDates.to) {
+                    range.to = new Date(gridDates.to.getTime());
+                }
+
+                ranges.push(range);
+
+
+            // Periodical expression
+            // E.g. 'y = 2016&dw in 1,2,3,4,5-11:00-05:30'
+            // Every Mn Ts Wd Th Fr in 2016 from 11:00 and duration 05:30
+            } else {
+                var conditions = {};
+
+                // If there are period conditions
+                if (rangeExprParts[0]) {
+
+                    // Split conditions by '&'
+                    var conditionsParts = rangeExprParts[0].split('&');
+
+                    // For each condition get condition parts:
+                    // - identifier
+                    // - operator
+                    // - value
+                    for (var i = 0; i < conditionsParts.length; i++) {
+                        conditionItemParts = conditionsParts[i].split(' ');
+                        conditions[conditionItemParts[0]] = {
+                            operator: conditionItemParts[1],
+                            value: conditionItemParts[2]
+                        }
+                    }
+                }
+
+                // Get all ranges that fits conditions and grid datetime interval 
+                var range = getNextRange(conditions, gridDates.from, gridDates.to);
+                while (range) {
+                    ranges.push(range);
+                    range = getNextRange(conditions, range.to, gridDates.to);
+                }
+            }
+
+            return ranges;
+
+            function getNextRange(conditions, from, to) {
+                var date = new Date(from.getTime());
+
+                while(date < to) {
+
+                    // Check year
+                    if (conditions.y) {
+                        if (!checkCondition(date.getFullYear(), condition.y.operator, condition.y.value)) {
+                            date.setFullYear(date.getFullYear() + 1, 0);
+                            date.setHours(0, 0);
+                            continue;
+                        }
+                    }
+
+                    // Check month
+                    if (conditions.m) {
+                        if (!checkCondition(date.getMonth(), condition.m.operator, condition.m.value)) {
+                            date.setMonth(date.getMonth() + 1, 1);
+                            date.setHours(0, 0);
+                            continue;
+                        }
+                    }
+
+                    // Check week number from year start
+                    if (conditions.w) {
+                        if (!checkCondition(getWeekInYear(date), condition.w.operator, condition.w.value)) {
+                            date.setDate(date.getDate() + 7 - date.getDay());
+                            date.setHours(0, 0);
+                            continue;
+                        }
+                    }
+
+                    // Check week number from year start
+                    if (conditions.wm) {
+                        if (!checkCondition(getWeekInYear(date), condition.w.operator, condition.w.value)) {
+                            date.setDate(date.getDate() + 7 - date.getDay());
+                            date.setHours(0, 0);
+                            continue;
+                        }
+                    }
+
+
+
+
+                    return;
+                }
+            }
+
+            function getWeekInYear(date) {
+                var firstWeek = new Date(date.getFullYear(), 0, 1);
+                firstWeek.setDate(-firstWeek.getDay());
+                return Math.ceil((date - firstWeek) / 604800000) + 1;
+            }
+
+            function checkCondition(value, operator, compareWith) {
+                switch(operator) {
+                    case '=':
+                        return value == +compareWith;
+                    case '<':
+                        return value < +compareWith;
+                    case '>':
+                        return value > +compareWith;
+                    case '<=':
+                        return value <= +compareWith;
+                    case '>=':
+                        return value >= +compareWith;
+                    case '!=':
+                        return value != +compareWith;
+                    case 'in':
+                        var compareList = compareWith.split(',');
+                        return compareList.indexOf(value + '') != -1;
+                }
+            }
         }
     }
 }]);
