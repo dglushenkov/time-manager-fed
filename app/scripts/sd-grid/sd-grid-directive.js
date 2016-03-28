@@ -40,6 +40,7 @@ angular.module('sdGridModule')
             gridAreas.scrollPlaceholderHorz.width(sdGridConstants.SCROLLBAR_WIDTH);
             gridAreas.scrollPlaceholderVert.height(sdGridConstants.SCROLLBAR_WIDTH);
             gridAreas.rulers.css('min-height', scope.height - sdGridConstants.SCROLLBAR_WIDTH);
+            gridAreas.nowMarker.css('min-height', scope.height - sdGridConstants.SCROLLBAR_WIDTH);
             scope.schedulesCounter = 0;
             gridOptions.nowMarker = initNowMarker();
 
@@ -65,6 +66,7 @@ angular.module('sdGridModule')
                 gridAreas.yAxis.scrollTop(gridAreas.body.scrollTop());
             });
 
+            // drag'n'scroll on grid mousedown event
             gridAreas.body.on('mousedown.dragScroll', sdGridHelper.onGridMouseDown);
 
             // Check if grid needs horizontal scroll after window resize
