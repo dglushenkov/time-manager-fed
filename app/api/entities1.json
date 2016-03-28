@@ -3,6 +3,21 @@
         "name": "Victor Nazarov",
         "schedules": [
             {
+                "name": "Work Schedule Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sint, facere unde! Quae debitis vitae vero autem quisquam laudantium possimus magni sequi iusto eum vel tempore perferendis necessitatibus, consequuntur iste voluptate.",
+                "ranges": [
+                    "-11:00-5:30",
+                    "-17:00-2:30"
+                ]
+            },
+            {
+                "name": "Work Schedule",
+                "ranges": [
+                    "-11:00-5:30",
+                    "-17:00-2:30"
+                ]
+            },
+
+            {
                 "name": "Work Schedule",
                 "ranges": [
                     "-11:00-5:30",

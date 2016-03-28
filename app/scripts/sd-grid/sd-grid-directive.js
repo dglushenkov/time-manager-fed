@@ -10,7 +10,8 @@ angular.module('sdGridModule')
         scope: {
             data: '=gridData',
             dates: '=',
-            hoursPerCell: '='
+            hoursPerCell: '=',
+            height: '@',
         },
         replace: true,
         templateUrl: 'views/sd-grid/grid.html',
@@ -19,74 +20,113 @@ angular.module('sdGridModule')
 
             // Grid areas
             gridAreas = {
-                gridBody: iElement.find('.sd-grid-body'),
-                gridRuler: iElement.find('.sd-grid-ruler'),
+                body: iElement.find('.sd-grid-body'),
+                rulers: iElement.find('.sd-grid-ruler'),
                 yAxis: iElement.find('.sd-grid-y-axis'),
                 xAxis: iElement.find('.sd-grid-x-axis'),
-                xAxisTime: iElement.find('.sd-grid-x-axis .time-labels'),
-                xAxisDay: iElement.find('.sd-grid-x-axis .day-labels'),
+                xAxisTime: iElement.find('.sd-grid-x-axis .axis-time'),
+                xAxisDay: iElement.find('.sd-grid-x-axis .axis-day'),
                 rangesWrapper: iElement.find('.sd-grid-ranges-wrapper'),
-                scrollPlaceholder: iElement.find('.sd-grid-scroll-placeholder'),
-                rulerContainer: iElement.find('.sd-grid-ruler'),
+                scrollPlaceholderHorz: iElement.find('.sd-grid-scroll-placeholder-horz'),
+                scrollPlaceholderVert: iElement.find('.sd-grid-scroll-placeholder-vert'),
+                nowMarker: iElement.find('.sd-grid-now-marker')
             };
 
+            // Internal grid variables container
             gridOptions = {};
 
+            gridAreas.body.height(scope.height);
+            gridAreas.yAxis.height(scope.height);
+            gridAreas.scrollPlaceholderHorz.width(sdGridConstants.SCROLLBAR_WIDTH);
+            gridAreas.scrollPlaceholderVert.height(sdGridConstants.SCROLLBAR_WIDTH);
+            gridAreas.rulers.css('min-height', scope.height - sdGridConstants.SCROLLBAR_WIDTH);
+            scope.schedulesCounter = 0;
+            gridOptions.nowMarker = initNowMarker();
+
             // Watchers
-            scope.$watch('hoursPerCell', function(hoursPerCell) {
-                gridOptions.cellCount = (scope.dates.to - scope.dates.from) / 3600000 / 
-                    hoursPerCell;
+            scope.$watch('hoursPerCell', function(newValue, oldValue) {
+                if (oldValue != undefined && newValue > oldValue && !gridOptions.isScrollable) {
+                    scope.hoursPerCell = oldValue;
+                    return;
+                }
+
+                var gridHorzScrollFactor = gridAreas.body.scrollLeft() / gridAreas.body.get(0).scrollWidth;
+
+                gridOptions.cellCount = (scope.dates.to - scope.dates.from) / sdGridConstants.HOUR_MILISEC / newValue;
                 gridOptions.isScrollable = needScroll();
 
                 drawRulers();
+                gridAreas.body.scrollLeft(gridHorzScrollFactor * gridAreas.body.get(0).scrollWidth);
             });
 
-            scope.cellHeight = sdGridConstants.CELL_HEIGHT;
-            scope.gridHeight = 700;
+            // Bind x and y axis scroll to grid scroll
+            iElement.find('.sd-grid-body').on('scroll', function() {
+                gridAreas.xAxis.scrollLeft(gridAreas.body.scrollLeft());
+                gridAreas.yAxis.scrollTop(gridAreas.body.scrollTop());
+            });
 
-            iElement.find('.sd-grid-body').on('scroll', onGridBodyScroll);
-
-            gridAreas.scrollPlaceholder.width(sdGridConstants.SCROLLBAR_WIDTH);
-            gridAreas.yAxis.height(700 - sdGridConstants.SCROLLBAR_WIDTH);
-
-
-            function needScroll() {
-                return gridOptions.cellCount * sdGridConstants.CELL_WIDTH > gridAreas.gridBody.width() - sdGridConstants.SCROLLBAR_WIDTH;
-            }
-
-            function onGridBodyScroll(e) {
-                gridAreas.xAxis.scrollLeft(gridAreas.gridBody.scrollLeft());
-                gridAreas.yAxis.scrollTop(gridAreas.gridBody.scrollTop());
-            }
+            // Check if grid needs horizontal scroll after window resize
+            $(window).on('resize', function() {
+                var needScrollNow = needScroll();
+                if (needScrollNow != gridOptions.isScrollable) {
+                    gridOptions.isScrollable = needScrollNow;
+                    drawRulers();
+                }
+            });
 
             // Draw grid rulers
             function drawRulers() {
-                var timeLabelsHtml = '';
+                var xAxisTimeHtml = '';
                 var rulerHtml = '';
-                var interval = (scope.dates.to - scope.dates.from) / gridOptions.cellCount;
+                var timeInterval = (scope.dates.to - scope.dates.from) / gridOptions.cellCount;
 
                 var timeCounter = new Date(scope.dates.from.getTime());
                 for (var i = 0; i < gridOptions.cellCount; i++) {
-                    timeLabelsHtml += sdGridConstants.TIME_LABEL_TPL
+                    xAxisTimeHtml += sdGridConstants.TIME_LABEL_TPL
                         .replace('%t', sdGridHelper.timeToHhmm(timeCounter))
                     rulerHtml += sdGridConstants.RULER_TPL;
 
-                    timeCounter = new Date(timeCounter.getTime() + interval);
+                    timeCounter = new Date(timeCounter.getTime() + timeInterval);
                 }
 
-                gridAreas.rulerContainer.html(rulerHtml);
-                gridAreas.xAxisTime.html(timeLabelsHtml);
+                gridAreas.rulers.html(rulerHtml);
+                gridAreas.xAxisTime.html(xAxisTimeHtml);
 
                 var cellWidth = (gridOptions.isScrollable) ? '' : 100 / gridOptions.cellCount + '%';
-                var fullWidth = (gridOptions.isScrollable) ? sdGridConstants.CELL_WIDTH * gridOptions.cellCount : '';
+                var totalWidth = (gridOptions.isScrollable) ? sdGridConstants.CELL_WIDTH * gridOptions.cellCount : '';
 
-                gridAreas.rulerContainer
+                gridAreas.rulers
                     .add(gridAreas.xAxisTime)
                     .add(gridAreas.xAxisDay)
                     .add(gridAreas.rangesWrapper)
-                    .width(fullWidth);
-                $(gridAreas.xAxisTime).find('.sd-grid-time-label').css('width', cellWidth);
-                $(gridAreas.rulerContainer).find('.sd-ruler-item').css('width', cellWidth);
+                    .width(totalWidth);
+                $(gridAreas.xAxisTime).find('.sd-grid-axis-time-item').css('width', cellWidth);
+                $(gridAreas.rulers).find('.sd-ruler-item').css('width', cellWidth);
+            }
+
+            // Checks if grid needs horizontal scroll
+            function needScroll() {
+                return gridOptions.cellCount * sdGridConstants.CELL_WIDTH > gridAreas.body.width() - sdGridConstants.SCROLLBAR_WIDTH;
+            }
+
+
+            // Initialize now marker timer
+            function initNowMarker() {
+                updateNowMarker();
+                return setInterval(updateNowMarker, sdGridConstants.MIN_MILISEC);
+
+                function updateNowMarker() {
+                    var now = new Date();
+                    var markerPos = (now - scope.dates.from) / (scope.dates.to - scope.dates.from) * 100; 
+                    if (markerPos < 100 && markerPos > 0) {
+                        gridAreas.nowMarker.css({
+                            'left': markerPos + '%',
+                            'display': 'block'
+                        });
+                    } else {
+                        gridAreas.nowMarker.css('display', 'none');
+                    }
+                }
             }
         }
     }

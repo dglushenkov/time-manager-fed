@@ -3,12 +3,7 @@ angular.module('scheduler', ['sdGridModule'])
 .controller('tmpCtrl', [
     '$scope', '$http',
     function($scope, $http) {
-        $scope.zoomScale = [0.25, 0.5, 1, 2, 4, 8];
-        $scope.currentZoomInd = 2;
-
-        $scope.$watch('currentZoomInd', function(value) {
-            $scope.hoursPerCell = $scope.zoomScale[$scope.currentZoomInd];
-        });
+        var zoomScale = [0.25, 0.5, 1, 2, 4, 8];
 
         $scope.isSamples1 = true;
         $scope.$watch('isSamples1', function() {
@@ -38,11 +33,11 @@ angular.module('scheduler', ['sdGridModule'])
         });
 
         $scope.increaseZoom = function() {
-            $scope.currentZoomInd = Math.min($scope.zoomScale.length - 1, $scope.currentZoomInd + 1);
+            $scope.hoursPerCell = zoomScale[Math.min(zoomScale.length - 1, zoomScale.indexOf($scope.hoursPerCell) + 1)];
         };
 
         $scope.decreaseZoom = function() {
-            $scope.currentZoomInd = Math.max(0, $scope.currentZoomInd - 1);
+            $scope.hoursPerCell = zoomScale[Math.max(0, zoomScale.indexOf($scope.hoursPerCell) - 1)];
         };
 
         $scope.dates = {

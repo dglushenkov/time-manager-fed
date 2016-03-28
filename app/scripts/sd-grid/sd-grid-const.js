@@ -1,11 +1,16 @@
 angular.module('sdGridModule')
 
 .constant('sdGridConstants', {
-    CELL_WIDTH: 70,
-    CELL_HEIGHT: 20,
+    CELL_WIDTH: 60,
+    ZOOM_SCALE: [0.25, 0.5, 1, 2, 4, 8],
 
-    TIME_LABEL_TPL: '<div class="sd-grid-time-label">%t</div>',
+    TIME_LABEL_TPL: '<div class="sd-grid-axis-time-item">%t</div>',
     RULER_TPL: '<div class="sd-ruler-item"></div>',
+
+    MIN_MILISEC: 1000 * 60,
+    HOUR_MILISEC: 1000 * 60 * 60,
+    DAY_MILISEC: 1000 * 60 * 60 * 24,
+    WEEK_MILISEC: 1000 * 60 * 60 * 24 * 7,
 
     SCROLLBAR_WIDTH: (function() {
         var outer = document.createElement("div");

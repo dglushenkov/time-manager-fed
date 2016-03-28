@@ -1,5 +1,8 @@
 angular.module('sdGridModule')
 .factory('sdGridHelper', ['sdGridConstants', function(gridConstants) {
+
+    // Returns time label from date object
+    // E.g. 10:45, 15:00
     function timeToHhmm(time) {
         return ('0' + time.getHours()).slice(-2) + ':' 
             + ('0' + time.getMinutes()).slice(-2);
@@ -166,12 +169,12 @@ angular.module('sdGridModule')
                 firstWeek.setMonth(date.getMonth());
             }
             firstWeek.setDate(-firstWeek.getDay());
-            return Math.ceil((date - firstWeek) / 604800000) + 1;
+            return Math.ceil((date - firstWeek) / sdGridConstants.WEEK_MILISEC) + 1;
         }
 
         function getDateInYear(date) {
             var yearStart = new Date(date.getFullYear(), 0, 1);
-            return Math.ceil((date - yearStart) / 86400000) + 1;
+            return Math.ceil((date - yearStart) / sdGridConstants.DAY_MILISEC) + 1;
         }
 
         function checkCondition(value, operator, compareWith) {
@@ -216,6 +219,7 @@ angular.module('sdGridModule')
     return {
         timeToHhmm: timeToHhmm,
         getRangeItemSize: getRangeItemSize,
-        parseRangeDatesExpr: parseRangeDatesExpr
+        parseRangeDatesExpr: parseRangeDatesExpr,
+        isGridDragScroll: false
     }
 }]);

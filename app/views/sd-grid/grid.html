@@ -1,23 +1,37 @@
 <div class="sd-grid">
-    <div class="sd-grid-x-axis-ctnr">
-        <div class="sd-grid-scroll-placeholder scroll-horz"></div>
-        <div class="sd-grid-name">Name</div>
+    <div class="sd-grid-x-axis-wrapper">
+        <div class="sd-grid-scroll-placeholder-horz"></div>
+        <div class="sd-grid-y-labels">
+            <div class="sd-grid-y-label-name">Name</div>
+            <div class="sd-grid-y-label-schedule">Task</div>
+        </div>
         <div class="sd-grid-x-axis">
-            <div class="day-labels"></div>
-            <div class="time-labels"></div>
+            <div class="axis-day"></div>
+            <div class="axis-time"></div>
         </div>
     </div>
 
     <div class="sd-grid-y-axis">
-        <div class="sd-grid-y-item" ng-repeat="entity in data" style="min-height: {{entity.schedules.length * cellHeight}}px">{{entity.name}}</div>
+        <div class="sd-grid-y-item" ng-repeat="entity in data" style="min-height: {{entity.schedules.length * 36}}px">
+            <div class="sd-grid-y-item-name">
+                {{entity.name}}
+            </div>
+            <div class="sd-grid-y-item-schedules">
+                <div class="sd-grid-y-item-schedule" ng-repeat="schedule in entity.schedules">
+                    {{schedule.name}}
+                </div>
+            </div>
+        </div>
+        <div class="sd-grid-scroll-placeholder-vert"></div>
     </div>
 
     <div class="sd-grid-body">
         <div class="sd-grid-ranges-wrapper">
             <div class="sd-grid-ruler"></div>
+            <div class="sd-grid-now-marker"></div>
 
-            <div class="sd-grid-entity" ng-repeat="entity in data">
-                <div class="sd-grid-schedules" ng-repeat="schedule in entity.schedules">
+            <div class="sd-grid-entity" ng-repeat="entity in data" ng-init="$parent.schedulesCounter = schedulesCounter + entity.schedules.length; total = $parent.schedulesCounter">
+                <div class="sd-grid-schedules {{((total + $index - entity.schedules.length) % 2 == 0) ? 'even' : ''}}" ng-repeat="schedule in entity.schedules">
                     <sd-range ng-repeat="range in schedule.ranges" range-expr="range" grid-dates="dates"></sd-range>
                 </div>
             </div>
