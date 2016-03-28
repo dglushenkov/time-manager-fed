@@ -1,19 +1,22 @@
 $cell-width: 60px;
-$schedule-margin: 8px;
-$range-height: 20px;
 
-$grid-border-color: #ddd;
+$grid-border-color: #e8e8e8;
 $axis-x-color: #d5dde5;
 $axis-x-bg: #1b1e24;
-$axis-x-height: 35px;
-$axis-x-border-color: #343a45;
+$axis-x-bg-image: linear-gradient(to bottom, #373d48 0%, #2b3038 100%);
+$axis-x-height: 40px;
+$axis-x-border-color: #424958;
 $axis-x-border-bottom-color: #48505f;
 
 $schedule-border-color: #eeecec;
-$schedule-even-bg: #ccc;
+$schedule-even-bg: #f2f2f2;
+$entity-border-color: #bcbcbc;
+$schedule-margin: 12px;
 
-$range-default-bg: #11b465;
+$range-height: 20px;
 $range-default-border-color: #0c6853;
+$range-border-radius: 2px;
+$range-default-bg-image: linear-gradient(to bottom, rgba(#11b465, 0.3) 0%, rgba(#11b465, 0.6) 100%);
 
 $axis-y-name-width: 200px;
 $axis-y-schedule-width: 200px;
@@ -23,8 +26,9 @@ $axis-y-bg: #666B85;
 $axis-y-border-color: #494c5d;
 $axis-y-color: #fff;
 $axis-y-border-right-color: #494c5d;
+$axis-y-bg-image: linear-gradient(to bottom, #666B85 0%, #5d6176 100%);
 
-$now-marker-color: #f93737;
+$now-marker-color: rgba(#f93737, .5);
 $now-marker-z-index: 10;
 
 // ===============================================================================================
@@ -44,6 +48,9 @@ $now-marker-z-index: 10;
     overflow-y: scroll;
     overflow-x: scroll;
     position: relative;
+}
+
+.sd-grid-ranges-wrapper {
     cursor: all-scroll;
 }
 
@@ -54,9 +61,11 @@ $now-marker-z-index: 10;
     float: left;
     width: 100%;
     overflow: hidden;
-    border-bottom: 3px solid $axis-x-border-bottom-color;
+    border-bottom: 2px solid $axis-x-border-bottom-color;
     background-color: $axis-x-bg;
+    background-image: $axis-x-bg-image;
     color: $axis-x-color;
+    text-shadow: 1px 1px #0a0c0e;
 }
 
 .sd-grid-x-axis {
@@ -123,12 +132,12 @@ $now-marker-z-index: 10;
 .sd-grid-y-item {
     border-bottom: 1px solid $axis-y-border-color;
     box-sizing: border-box;
+    background-image: $axis-y-bg-image;
 }
 
 .sd-grid-y-item-name {
     padding: 0 10px;
-    line-height: 35px;
-    height: 35px;
+    padding-top: $schedule-margin;
     float: left;
     width: $axis-y-name-width;
 }
@@ -141,9 +150,9 @@ $now-marker-z-index: 10;
 }
 
 .sd-grid-y-item-schedule {
-    line-height: 36px;
     padding: 0 10px;
-    height: 36px;
+    padding-top: $schedule-margin;
+    height: $range-height + 2 * $schedule-margin;
     text-align: left;
     border-bottom: 1px solid $axis-y-border-color;
     white-space: nowrap;
@@ -180,7 +189,7 @@ $now-marker-z-index: 10;
 // Now Marker
 // ===============================================================================================
 .sd-grid-now-marker {
-    width: 2px;
+    width: 3px;
     background-color: $now-marker-color;
     position: absolute;
     bottom: 0;
@@ -203,21 +212,24 @@ $now-marker-z-index: 10;
 .sd-grid-schedules {
     position: relative;
     height: $range-height + $schedule-margin * 2;
+    border-bottom: 1px solid $grid-border-color;
 
     &.even {
         background-color: rgba($schedule-even-bg, .2);
     }
 
     &:last-child {
-        border-bottom: 1px solid $grid-border-color;
+        border-bottom-color: $entity-border-color;
     }
 }
 
 .sd-grid-range {
     position: absolute;
-    background-color: rgba($range-default-bg, 0.8);
+    background-image: $range-default-bg-image;
     top: $schedule-margin;
     border: 1px solid $range-default-border-color;
     height: $range-height;
     font-size: 10px;
+    border-radius: $range-border-radius;
+    cursor: auto;
 }

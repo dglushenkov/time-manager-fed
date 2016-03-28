@@ -216,10 +216,54 @@ angular.module('sdGridModule')
         }
     }
 
+    function onGridMouseDown(e) {
+        // var target = e.target
+        // while (target != this) {
+        //     if ($(target).hasClass('sd-grid-range')) return;
+        //     target = target.parentNode;
+        // }
+
+        grid = $(this);
+        gridDragScroll = {
+            x: e.pageX,
+            y: e.pageY,
+            scrollLeft: grid.scrollLeft(),
+            scrollTop: grid.scrollTop(),
+            isBeginDrag: true
+        };
+
+        $(document).on('mousemove.dragScroll', function(e) {
+            if (gridDragScroll.isBeginDrag) {
+                var dx = Math.abs(e.pageX - gridDragScroll.x);
+                var dy = Math.abs(e.pageY - gridDragScroll.y);
+                if (dx + dy < 25) return;
+
+                gridDragScroll.isBeginDrag = false;
+                gridDragScroll.isHorz = dx > dy;
+            } 
+
+
+            if (gridDragScroll.isHorz) {
+                grid.scrollLeft(gridDragScroll.scrollLeft - e.pageX + gridDragScroll.x);
+            } else {
+                grid.scrollTop(gridDragScroll.scrollTop - e.pageY + gridDragScroll.y);
+            }
+        });
+
+        $(document).on('mouseup.dragScroll', function() {
+            $(document).off('mousemove.dragScroll')
+                .off('mouseup.dragScroll');
+        });
+
+        e.preventDefault();
+    }
+
+    var gridDragScroll = {};
+
     return {
         timeToHhmm: timeToHhmm,
         getRangeItemSize: getRangeItemSize,
         parseRangeDatesExpr: parseRangeDatesExpr,
-        isGridDragScroll: false
+        onGridMouseDown: onGridMouseDown
     }
 }]);

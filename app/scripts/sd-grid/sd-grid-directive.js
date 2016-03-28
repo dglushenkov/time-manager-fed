@@ -60,10 +60,12 @@ angular.module('sdGridModule')
             });
 
             // Bind x and y axis scroll to grid scroll
-            iElement.find('.sd-grid-body').on('scroll', function() {
+            gridAreas.body.on('scroll', function() {
                 gridAreas.xAxis.scrollLeft(gridAreas.body.scrollLeft());
                 gridAreas.yAxis.scrollTop(gridAreas.body.scrollTop());
             });
+
+            gridAreas.body.on('mousedown.dragScroll', sdGridHelper.onGridMouseDown);
 
             // Check if grid needs horizontal scroll after window resize
             $(window).on('resize', function() {
