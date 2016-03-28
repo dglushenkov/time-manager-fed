@@ -1,7 +1,7 @@
 angular.module('sdGridModule')
 
 .constant('sdGridConstants', {
-    CELL_WIDTH: 60,
+    CELL_WIDTH: 70,
     ZOOM_SCALE: [0.25, 0.5, 1, 2, 4, 8],
 
     TIME_LABEL_TPL: '<div class="sd-grid-axis-time-item">%t</div>',
