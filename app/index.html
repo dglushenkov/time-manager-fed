@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="timeManager">
+<html lang="en" ng-app="scheduler">
 <head>
     <meta charset="UTF-8">
     <title>Time Manager</title>
@@ -11,15 +11,18 @@
             <div class="col-xs-12">
                 <button ng-click="switchSamples()">Switch Samples</button>
                 <button ng-click="switchZoom()">Switch Zoom</button>
+                <button ng-click="edit()">Change range</button>
+                <button ng-click="decreaseZoom()">Zoom +</button>
+                <button ng-click="increaseZoom()">Zoom -</button>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-12">
-                <tm-grid
+                <sd-grid
                     grid-data="sampleData"
                     dates="dates"
-                    view-mode="viewMode"
-                ></tm-grid>
+                    hours-per-cell = "hoursPerCell"
+                ></sd-grid>
             </div>
         </div>
     </div>

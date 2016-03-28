@@ -1,0 +1,26 @@
+<div class="sd-grid">
+    <div class="sd-grid-x-axis-ctnr">
+        <div class="sd-grid-scroll-placeholder scroll-horz"></div>
+        <div class="sd-grid-name">Name</div>
+        <div class="sd-grid-x-axis">
+            <div class="day-labels"></div>
+            <div class="time-labels"></div>
+        </div>
+    </div>
+
+    <div class="sd-grid-y-axis">
+        <div class="sd-grid-y-item" ng-repeat="entity in data" style="min-height: {{entity.schedules.length * cellHeight}}px">{{entity.name}}</div>
+    </div>
+
+    <div class="sd-grid-body">
+        <div class="sd-grid-ranges-wrapper">
+            <div class="sd-grid-ruler"></div>
+
+            <div class="sd-grid-entity" ng-repeat="entity in data">
+                <div class="sd-grid-schedules" ng-repeat="schedule in entity.schedules">
+                    <sd-range ng-repeat="range in schedule.ranges" range-expr="range" grid-dates="dates"></sd-range>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

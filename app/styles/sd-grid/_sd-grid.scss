@@ -1,0 +1,125 @@
+$cell-border-color: #ccc;
+$y-axis-col-width: 15%;
+$range-height: 20px;
+$cell-width: 70px;
+
+// Grid
+.sd-grid {
+    @extend .clearfix;
+
+    .sd-grid-body {
+        overflow-x: scroll;
+    }
+}
+
+.sd-grid-scroll-placeholder {
+    &.scroll-horz {
+        float: right;
+        height: 1px;
+    }
+
+    &.scroll-vert {
+        width: 1px;
+    }
+}
+
+// X Axis
+.sd-grid-x-axis-ctnr {
+    float: left;
+    width: 100%;
+}
+
+.sd-grid-name {
+    float: left;
+    width: $y-axis-col-width;
+}
+
+.sd-grid-x-axis {
+    overflow: hidden;
+
+    .time-labels {
+        @extend .clearfix;
+    }
+}
+
+.sd-grid-time-label {
+    float: left;
+    text-align: center;
+    border: 1px solid $cell-border-color;
+    border-left-style: none;
+    width: $cell-width;
+
+    &:first-child {
+        border-left-style: solid;
+    }
+}
+
+// Y Axis
+.sd-grid-y-axis {
+    float: left;
+    width: $y-axis-col-width;
+    overflow-y: hidden;
+    height: 700px;
+}
+
+.sd-grid-y-item {
+    border: 2px solid  #ccc;
+    box-sizing: content-box;
+}
+
+// Grid body
+.sd-grid-body {
+    float: left;
+    width: 100% - $y-axis-col-width;
+    height: 700px;
+    overflow-y: scroll;
+    position: relative;
+}
+
+// Ruler
+.sd-grid-ruler {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 100%;
+
+    .sd-ruler-item {
+        float: left;
+        text-align: center;
+        height: 100%;
+        border: 1px solid $cell-border-color;
+        border-left-style: none;
+        border-top: none;
+        width: $cell-width;
+
+        &:first-child {
+            border-left-style: solid;
+        }
+    }
+}
+
+// Ranges
+.sd-grid-ranges-wrapper {
+    position: relative;
+}
+
+.sd-grid-entity {
+    border: 2px solid  #ccc;
+    border-left: none;
+    border-right: none;
+}
+
+.sd-grid-schedules {
+    position: relative;
+    height: $range-height;
+}
+
+.sd-grid-range {
+    position: absolute;
+    background-color: #539e2e;
+    top: 0;
+    border: 1px solid  #000;
+    height: $range-height - 5;
+    font-size: 10px;
+}

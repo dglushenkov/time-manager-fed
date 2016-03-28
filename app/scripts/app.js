@@ -1,54 +1,65 @@
-angular.module('timeManager', ['gridModule'])
+angular.module('scheduler', ['sdGridModule'])
 
 .controller('tmpCtrl', [
     '$scope', '$http',
     function($scope, $http) {
+        $scope.zoomScale = [0.25, 0.5, 1, 2, 4, 8];
+        $scope.currentZoomInd = 2;
 
-        $http.get('api/entities.json').
-            success(function(response) {
-                var res = response;
-                for (var i = 0; i < 500; i++) {
-                    response
-                }
-
-                $scope.sampleData = response;
+        $scope.$watch('currentZoomInd', function(value) {
+            $scope.hoursPerCell = $scope.zoomScale[$scope.currentZoomInd];
         });
 
-        $scope.dates = {
-            from: new Date(2016, 2, 23),
-            to: new Date(2016, 2, 24)
-        };
-
-        $scope.viewMode = {
-            hoursPerCell: 1,
-            isScrollable: false
-        };
-
         $scope.isSamples1 = true;
-        $scope.isDates1 = true;
+        $scope.$watch('isSamples1', function() {
+            var samplesFile = ($scope.isSamples1) ? 'api/entities1.json' : 'api/entities2.json';
 
+            $http.get(samplesFile).
+                success(function(response) {
+                    $scope.sampleData = response;
+            });
+        });
+
+        $scope.isRangeChanged = false;
+        $scope.$watch('isRangeChanged', function() {
+            var ranges = ($scope.isRangeChanged) ?
+                [
+                    "-8:00-5:30",
+                    "-15:00-2:30"
+                ] :
+                [
+                    "-11:00-5:30",
+                    "-17:00-2:30"
+                ];
+
+            if ($scope.sampleData) {
+                $scope.sampleData[0].schedules[0].ranges = ranges;
+            }
+        });
+
+        $scope.increaseZoom = function() {
+            $scope.currentZoomInd = Math.min($scope.zoomScale.length - 1, $scope.currentZoomInd + 1);
+        };
+
+        $scope.decreaseZoom = function() {
+            $scope.currentZoomInd = Math.max(0, $scope.currentZoomInd - 1);
+        };
+
+        $scope.dates = {
+            from: new Date(2016, 2, 28),
+            to: new Date(2016, 2, 30)
+        };
+
+        $scope.hoursPerCell = 1;
         $scope.switchZoom = function() {
-            $scope.viewMode.isScrollable = !$scope.viewMode.isScrollable;
-            $scope.viewMode.hoursPerCell = ($scope.viewMode.hoursPerCell == 1) ? 0.25 : 1;
+            $scope.hoursPerCell = ($scope.hoursPerCell == 1) ? 0.5 : 1;
         }
 
         $scope.switchSamples = function() {
             $scope.isSamples1 = !$scope.isSamples1;
-            var samples = ($scope.isSamples1) ? 'api/entities.json' : 'api/entities1.json';
+        }
 
-            $scope.dates = ($scope.isSamples1) ? 
-                {
-                    from: new Date(2016, 2, 23),
-                    to: new Date(2016, 2, 24)
-                } :
-                {
-                    from: new Date(2016, 2, 23, 3),
-                    to: new Date(2016, 2, 24, 3)
-                }
-
-            $http.get(samples).
-                success(function(response) {
-                    $scope.sampleData = response;
-            });
+        $scope.edit = function() {
+            $scope.isRangeChanged = !$scope.isRangeChanged;
         }
 }]);

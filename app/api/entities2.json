@@ -1,0 +1,50 @@
+[
+    {
+        "name": "Victor Nazarov",
+        "schedules": [
+            {
+                "name": "Work Schedule",
+                "ranges": [
+                    "-11:00-5:30",
+                    "-17:00-2:30"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Dmitry Glushenkov",
+        "schedules": [
+            {
+                "name": "Work Schedule",
+                "ranges": [
+                    "-12:30-6:00",
+                    "-20:00-2:00"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Victor Nazarov",
+        "schedules": [
+            {
+                "name": "Work Schedule",
+                "ranges": [
+                    "-11:00-5:30",
+                    "-17:00-2:30"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Dmitry Glushenkov",
+        "schedules": [
+            {
+                "name": "Work Schedule",
+                "ranges": [
+                    "-12:30-6:00",
+                    "-20:00-2:00"
+                ]
+            }
+        ]
+    }
+]
