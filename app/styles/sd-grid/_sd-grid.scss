@@ -9,7 +9,7 @@ $axis-x-border-color: #424958;
 $axis-x-border-bottom-color: #48505f;
 
 $schedule-border-color: #eeecec;
-$schedule-even-bg: #f2f2f2;
+$schedule-even-bg: #aaaaaa;
 $entity-border-color: #bcbcbc;
 $schedule-margin: 12px;
 
@@ -151,7 +151,7 @@ $now-marker-z-index: 10;
 
 .sd-grid-y-item-schedule {
     padding: 0 10px;
-    padding-top: $schedule-margin;
+    padding-top: $schedule-margin + 2;
     height: $range-height + 2 * $schedule-margin;
     text-align: left;
     border-bottom: 1px solid $axis-y-border-color;
@@ -215,7 +215,7 @@ $now-marker-z-index: 10;
     border-bottom: 1px solid $grid-border-color;
 
     &.even {
-        background-color: rgba($schedule-even-bg, .2);
+        background-color: rgba($schedule-even-bg, .1);
     }
 
     &:last-child {
