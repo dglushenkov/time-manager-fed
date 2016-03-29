@@ -10,7 +10,7 @@ angular.module('sdGridModule')
         scope: {
             data: '=gridData',
             dates: '=',
-            hoursPerCell: '=',
+            zoom: '=',
             height: '@',
         },
         templateUrl: 'views/sd-grid/grid.html',
@@ -40,6 +40,7 @@ angular.module('sdGridModule')
 
             // Internal grid variables container
             gridOptions = {};
+            scope.sortReverse = false;
 
             gridAreas.body.height(scope.height);
             gridAreas.yAxis.height(scope.height);
@@ -54,20 +55,23 @@ angular.module('sdGridModule')
             // ====================================================================================
             // Watchers
             // ====================================================================================
-            scope.$watch('hoursPerCell', function(newValue, oldValue) {
-                if (oldValue != undefined && newValue > oldValue && !gridOptions.isScrollable) {
-                    scope.hoursPerCell = oldValue;
-                    return;
-                }
-
+            scope.$watch('hoursPerCell', function(value) {
                 var gridHorzScrollFactor = gridAreas.body.scrollLeft() / gridAreas.body.get(0).scrollWidth;
 
-                gridOptions.cellCount = (scope.dates.to - scope.dates.from) / sdGridConstants.HOUR_MILISEC / newValue;
+                gridOptions.cellCount = (scope.dates.to - scope.dates.from) / sdGridConstants.HOUR_MILISEC / value;
                 gridOptions.isScrollable = needScroll();
 
                 drawRulers();
                 gridAreas.body.scrollLeft(gridHorzScrollFactor * gridAreas.body.get(0).scrollWidth);
             });
+
+            scope.$watch('zoom', function(value) {
+                var newZoom = value;
+                newZoom = Math.min(sdGridConstants.ZOOM_SCALE.length - 1, newZoom);
+                newZoom = Math.max(0, newZoom);
+                scope.zoom = newZoom;
+                scope.hoursPerCell = sdGridConstants.ZOOM_SCALE[newZoom];
+            })
 
 
             // ====================================================================================
@@ -91,28 +95,30 @@ angular.module('sdGridModule')
                 }
             });
 
-            iElement.on('click', '.sd-grid-y-item-name', function(e) {
-                var scope = $(e.target).parent('.sd-grid-y-item').data('scope-link');
+            // Expand person shedules
+            iElement.on('click', '.sd-grid-y-item-title', function(e) {
+                var scope = $(e.target).parents('.sd-grid-y-item').data('scope-link');
                 scope.$apply(function() {
-                    scope.isExpanded = !scope.isExpanded;
+                    scope.entity.isExpanded = !scope.entity.isExpanded;
                 });
+            });
+
+            // Y axis mousewheel scroll
+            iElement.on('mousewheel', '.sd-grid-y-axis', function(e) {
+                var dy = e.deltaFactor * e.deltaY;
+                gridAreas.body.scrollTop(gridAreas.body.scrollTop() - dy);
             });
 
 
             // ====================================================================================
             // Scope methods
             // ====================================================================================
-            // Increase zoom
-            scope.zoomIn = function() {
-                scope.hoursPerCell = sdGridConstants.ZOOM_SCALE[Math.min(
-                    sdGridConstants.ZOOM_SCALE.length - 1, 
-                    sdGridConstants.ZOOM_SCALE.indexOf(scope.hoursPerCell) + 1
-                )];
+            scope.setZoom = function(value) {
+                scope.zoom += value;
             }
 
-            // Decrease zoom
-            scope.zoomOut = function() {
-                scope.hoursPerCell = sdGridConstants.ZOOM_SCALE[Math.max(0, sdGridConstants.ZOOM_SCALE.indexOf(scope.hoursPerCell) - 1)];
+            scope.toggleSort = function() {
+                scope.sortReverse = !scope.sortReverse;
             }
 
 

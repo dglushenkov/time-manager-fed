@@ -1,2 +1,2 @@
-angular.module('sdGridModule', []);
+angular.module('sdGridModule', ['ngAnimate']);
 

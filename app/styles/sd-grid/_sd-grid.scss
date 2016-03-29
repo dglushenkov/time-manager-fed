@@ -2,41 +2,40 @@ $cell-width: 70px;
 $grid-border-color: rgba(#ccc, .5);
 
 $axis-x-color: #d5dde5;
-$axis-x-bg: #1b1e24;
-$axis-x-bg-image: linear-gradient(to bottom, #373d48 0%, #2b3038 100%);
+$axis-x-bg: #303540;
 $axis-x-height: 40px;
-$axis-x-border-color: #424958;
-$axis-x-border-bottom-color: #48505f;
+$axis-x-border-color: #3d4554;
+
+$axis-y-width: 25%;
+$axis-y-bg: #51556a;
+$axis-y-border-color: #454858;
+$axis-y-color: #fff;
+
+$now-marker-color: rgba(#f93737, .5);
+$now-marker-z-index: 10;
 
 $schedule-border-color: #dbdbdb;
 $schedule-even-bg: #aaaaaa;
 $entity-border-color: #bcbcbc;
 $schedule-margin: 12px;
 $range-height: 20px;
+$dayschedule-range-height: 25px;
 $schedule-height: 2 * $schedule-margin + $range-height;
+$dayschedule-height: 2 * $schedule-margin + $dayschedule-range-height;
 
-$range-default-border-color: #0c6853;
 $range-border-radius: 0px;
-$range-default-bg-image: linear-gradient(to bottom, rgba(#11b465, 0.3) 0%, rgba(#11b465, 0.6) 100%);
+$range-default-bg: #2980B9;
+$range-dayschedule-bg: #27AE60;
+$range-opacity: 0.4;
 
-$axis-y-name-width: 200px;
-$axis-y-schedule-width: 200px;
-$axis-y-border-width: 2px;
-$axis-y-width: $axis-y-name-width + $axis-y-schedule-width + $axis-y-border-width;
-$axis-y-bg: #666B85;
-$axis-y-border-color: #494c5d;
-$axis-y-color: #fff;
-$axis-y-border-right-color: #494c5d;
-$axis-y-bg-image: linear-gradient(to bottom, #666B85 0%, #5d6176 100%);
-
-$now-marker-color: rgba(#f93737, .5);
-$now-marker-z-index: 10;
+$status-border-width: 10px;
+$status-active-color: #27AE60;
+$status-busy-color: #d86565;
+$status-inactive-color: #d0d0d0;
 
 @import '_x-axis';
 @import '_y-axis';
 @import '_rulers';
-@import '_range';
+@import '_schedules';
 @import '_grid';
-
-
 

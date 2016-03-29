@@ -3,9 +3,9 @@ angular.module('scheduler', ['sdGridModule'])
 .controller('tmpCtrl', [
     '$scope', '$http',
     function($scope, $http) {
-        var zoomScale = [0.25, 0.5, 1, 2, 4, 8];
+        $scope.zoom = 4;
 
-        $http.get('api/entities3.json').then(function(response) {
+        $http.get('api/entities2.json').then(function(response) {
             $scope.sampleData = response.data;
         })
 
@@ -18,8 +18,8 @@ angular.module('scheduler', ['sdGridModule'])
         };
 
         $scope.dates = {
-            from: new Date(2016, 2, 29),
-            to: new Date(2016, 2, 30)
+            from: new Date(2016, 2, 30),
+            to: new Date(2016, 2, 31)
         };
 
         $scope.hoursPerCell = 1;

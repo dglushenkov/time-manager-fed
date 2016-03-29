@@ -2,11 +2,9 @@
     float: left;
     width: 100%;
     overflow: hidden;
-    border-bottom: 2px solid $axis-x-border-bottom-color;
+    border-bottom: 1px solid $axis-x-border-color;
     background-color: $axis-x-bg;
-    background-image: $axis-x-bg-image;
     color: $axis-x-color;
-    text-shadow: 1px 1px #0a0c0e;
 }
 
 .sd-grid-x-axis {
@@ -37,23 +35,21 @@
     padding-left: 5px;
 }
 
-.sd-grid-y-labels {
+.sd-grid-y-label {
     float: left;
     width: $axis-y-width;
-    border-right: $axis-y-border-width solid $axis-x-border-color;
+    border-right: 1px solid $axis-x-border-color;
     height: $axis-x-height;
     line-height: $axis-x-height;
-}
-
-.sd-grid-y-label-name {
     padding-left: 10px;
-    float: left;
-    width: $axis-y-name-width;
-}
+    cursor: pointer;
+    @extend .select-none;
 
-.sd-grid-y-label-schedule {
-    padding-left: 10px;
-    float: left;
-    width: $axis-y-schedule-width;
-    border-left: 1px solid $axis-x-border-color;
+    .glyphicon {
+        display: inline-block;
+        font-size: 13px;
+        width: 35px;
+        margin-right: 7px;
+        text-align: center;
+    }
 }

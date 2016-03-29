@@ -1,0 +1,59 @@
+.sd-grid-ranges-wrapper {
+    position: relative;
+}
+
+.sd-grid-entity {
+    box-sizing: border-box;
+}
+
+.sd-grid-schedules {
+    overflow: hidden;
+    height: 0;
+
+    &.ng-hide-add,
+    &.ng-hide-remove {
+        transition: max-height 0.2s;
+        height: auto;
+    }
+
+    &:not(.ng-hide) {
+        height: auto;
+    }
+
+    &.ng-hide {
+        max-height: 0 !important;
+    }
+
+}
+
+.sd-grid-schedule {
+    position: relative;
+    height: $schedule-height;
+    border-bottom: 1px solid $grid-border-color;
+
+    &.dayschedule {
+        height: $dayschedule-height;
+    }
+
+    &.dayschedule {
+        .sd-grid-range {
+            background: rgba($range-dayschedule-bg, $range-opacity);
+            border-color: $range-dayschedule-bg;
+            height: $dayschedule-range-height;
+            font-size: 10px;
+            border-radius: $range-border-radius;
+            cursor: auto;
+        }
+    }
+}
+
+.sd-grid-range {
+    position: absolute;
+    top: $schedule-margin;
+    background: rgba($range-default-bg, $range-opacity);
+    border: 1px solid $range-default-bg;
+    height: $range-height;
+    font-size: 10px;
+    border-radius: $range-border-radius;
+    cursor: auto;
+}

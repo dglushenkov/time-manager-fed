@@ -1,8 +1,10 @@
-<div class="sd-grid-y-item">
-    <div class="sd-grid-y-item-name">
-        {{entity.name}}
+<div class="sd-grid-y-item person-status-{{(entity.status ? entity.status : 'none')}}">
+    <div class="sd-grid-y-item-title">
+        <img ng-src="{{entity.avatar}}" class="sd-grid-y-item-avatar"/>
+        <span class="sd-grid-y-item-name">{{entity.name}}</span>
+        <span class="sd-grid-y-item-status"></span>
     </div>
-    <div ng-show="isExpanded" class="sd-grid-y-item-schedules">
+    <div ng-show="entity.isExpanded" class="sd-grid-y-item-schedules ng-hide" style="max-height: {{entity.schedules.length * 44}}px">
         <div class="sd-grid-y-item-schedule" ng-repeat="schedule in entity.schedules">
             {{schedule.name}}
         </div>
