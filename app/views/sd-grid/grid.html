@@ -1,8 +1,13 @@
-<div class="">
-    <button ng-click="setZoom(-1)">Zoom +</button>
-    <button ng-click="setZoom(1)">Zoom -</button>
-</div>
 <div class="sd-grid">
+    <div class="sd-grid-controls">
+        <div class="sd-grid-name-filter">
+            <input type="text" ng-model="name" ng-model-options="{ debounce: 400 }">
+        </div>
+        <div class="sd-grid-caption">
+            <button ng-click="setZoom(-1)">Zoom +</button>
+            <button ng-click="setZoom(1)">Zoom -</button>
+        </div>
+    </div>
     <div class="sd-grid-x-axis-wrapper">
         <div class="sd-grid-scroll-placeholder-horz"></div>
         <div class="sd-grid-y-label" ng-click="toggleSort()">
@@ -17,7 +22,10 @@
     </div>
 
     <div class="sd-grid-y-axis">
-        <sd-grid-entity-person ng-repeat="entity in data | orderBy:'name':sortReverse" entity="entity"></sd-grid-entity-person>
+        <sd-grid-entity-person 
+            ng-repeat="entity in data | filter:name | orderBy:'name':sortReverse" 
+            entity="entity">
+        </sd-grid-entity-person>
        
         <div class="sd-grid-scroll-placeholder-vert"></div>
     </div>
@@ -26,7 +34,10 @@
         <div class="sd-grid-ranges-wrapper">
             <div class="sd-grid-ruler"></div>
 
-            <sd-grid-entity-schedules ng-repeat="entity in data | orderBy:'name':sortReverse" entity="entity" dates="dates"></sd-grid-entity-schedules>
+            <sd-grid-entity-schedules 
+                ng-repeat="entity in data | filter:name | orderBy:'name':sortReverse" 
+                entity="entity" dates="dates">
+            </sd-grid-entity-schedules>
             
             <div class="sd-grid-now-marker"></div>
         </div>
