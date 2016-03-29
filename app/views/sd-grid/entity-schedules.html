@@ -2,8 +2,9 @@
     <div class="sd-grid-schedules">
         <sd-range ng-repeat="range in entity.workSchedule.ranges" range-expr="range" grid-dates="dates"></sd-range>
     </div>
-    <!-- <sd-range range-expr="entity.workSchedule" grid-dates="dates"></sd-range> -->
-    <div class="sd-grid-schedules" ng-repeat="schedule in entity.schedules">
-        <sd-range ng-repeat="range in schedule.ranges" range-expr="range" grid-dates="dates"></sd-range>
+    <div ng-show="entity.isExpanded" >
+        <div class="sd-grid-schedules" ng-repeat="schedule in entity.schedules">
+            <sd-range ng-repeat="range in schedule.ranges" range-expr="range" grid-dates="dates"></sd-range>
+        </div>
     </div>
 </div>

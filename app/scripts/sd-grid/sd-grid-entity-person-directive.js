@@ -13,6 +13,7 @@ angular.module('sdGridModule')
             },
             link: function(scope, iElement) {
                 $(iElement).data('scope-link', scope);
+                scope.entity.isExpanded = false;
             }
         }
 }]);
