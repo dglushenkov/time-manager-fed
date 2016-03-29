@@ -34,4 +34,5 @@ angular.module('scheduler', ['sdGridModule'])
         $scope.edit = function() {
             $scope.isRangeChanged = !$scope.isRangeChanged;
         }
+
 }]);
