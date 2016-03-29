@@ -13,7 +13,6 @@ angular.module('sdGridModule')
             hoursPerCell: '=',
             height: '@',
         },
-        replace: true,
         templateUrl: 'views/sd-grid/grid.html',
 
         link: function(scope, iElement) {
@@ -78,6 +77,19 @@ angular.module('sdGridModule')
                 }
             });
 
+            // Increase zoom
+            scope.zoomIn = function() {
+                scope.hoursPerCell = sdGridConstants.ZOOM_SCALE[Math.min(
+                    sdGridConstants.ZOOM_SCALE.length - 1, 
+                    sdGridConstants.ZOOM_SCALE.indexOf(scope.hoursPerCell) + 1
+                )];
+            }
+
+            // Decrease zoom
+            scope.zoomOut = function() {
+                scope.hoursPerCell = sdGridConstants.ZOOM_SCALE[Math.max(0, sdGridConstants.ZOOM_SCALE.indexOf(scope.hoursPerCell) - 1)];
+            }
+
             // Draw grid rulers
             function drawRulers() {
                 var xAxisTimeHtml = '';
@@ -112,7 +124,6 @@ angular.module('sdGridModule')
             function needScroll() {
                 return gridOptions.cellCount * sdGridConstants.CELL_WIDTH > gridAreas.body.width() - sdGridConstants.SCROLLBAR_WIDTH;
             }
-
 
             // Initialize now marker timer
             function initNowMarker() {

@@ -1,0 +1,49 @@
+.sd-grid-y-axis {
+    float: left;
+    width: $axis-y-width;
+    overflow-y: hidden;
+    border-right: 2px solid $axis-y-border-right-color;
+    background-color: $axis-y-bg;
+    color: $axis-y-color;
+}
+
+.sd-grid-y-item {
+    border-bottom: 1px solid $axis-y-border-color;
+    box-sizing: border-box;
+    background-image: $axis-y-bg-image;
+}
+
+.sd-grid-y-item-name {
+    padding: 0 10px;
+    padding-top: $schedule-margin;
+    float: left;
+    width: $axis-y-name-width;
+}
+
+.sd-grid-y-item-schedules {
+    float: left;
+    width: $axis-y-schedule-width;
+    font-size: 12px;
+}
+
+.sd-grid-y-item-schedule {
+    padding: 0 10px;
+    border-left: 1px solid $axis-y-border-color;
+    padding-top: $schedule-margin + 2;
+    height: $range-height + 2 * $schedule-margin;
+    text-align: left;
+    border-bottom: 1px solid $axis-y-border-color;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    &.dayschedule {
+        border-left: none;
+        text-indent: 200%;
+        overflow: hidden;
+    }
+}

@@ -1,0 +1,19 @@
+.sd-grid {
+    @extend .clearfix;
+    overflow: hidden;
+
+    margin-top: 30px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.sd-grid-body {
+    float: left;
+    width: calc(100% - #{$axis-y-width});
+    overflow-y: scroll;
+    overflow-x: scroll;
+    position: relative;
+}
+
+.sd-grid-ranges-wrapper {
+    cursor: all-scroll;
+}

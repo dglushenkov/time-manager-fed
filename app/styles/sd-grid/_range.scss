@@ -1,0 +1,32 @@
+.sd-grid-ranges-wrapper {
+    position: relative;
+}
+
+.sd-grid-entity {
+    box-sizing: border-box;
+}
+
+.sd-grid-schedules {
+    position: relative;
+    height: $range-height + $schedule-margin * 2;
+    border-bottom: 1px solid $grid-border-color;
+
+    &.even {
+        background-color: rgba($schedule-even-bg, .1);
+    }
+
+    &:last-child {
+        border-bottom-color: $entity-border-color;
+    }
+}
+
+.sd-grid-range {
+    position: absolute;
+    background-image: $range-default-bg-image;
+    top: $schedule-margin;
+    border: 1px solid $range-default-border-color;
+    height: $range-height;
+    font-size: 10px;
+    border-radius: $range-border-radius;
+    cursor: auto;
+}

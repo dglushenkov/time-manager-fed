@@ -1,0 +1,59 @@
+.sd-grid-x-axis-wrapper {
+    float: left;
+    width: 100%;
+    overflow: hidden;
+    border-bottom: 2px solid $axis-x-border-bottom-color;
+    background-color: $axis-x-bg;
+    background-image: $axis-x-bg-image;
+    color: $axis-x-color;
+    text-shadow: 1px 1px #0a0c0e;
+}
+
+.sd-grid-x-axis {
+    overflow: hidden;
+
+    .axis-time {
+        @extend .clearfix;
+    }
+}
+
+.sd-grid-scroll-placeholder-horz {
+    float: right;
+    height: 1px;
+}
+
+.sd-grid-scroll-placeholder-vert {
+    width: 1px;
+}
+
+.sd-grid-axis-time-item {
+    float: left;
+    text-align: left;
+    border-right: 1px solid $axis-x-border-color;
+    width: $cell-width;
+    font-size: 12px;
+    height: $axis-x-height;
+    line-height: $axis-x-height;
+    padding-left: 5px;
+}
+
+.sd-grid-y-labels {
+    float: left;
+    width: $axis-y-width;
+    border-right: $axis-y-border-width solid $axis-x-border-color;
+    height: $axis-x-height;
+    line-height: $axis-x-height;
+}
+
+.sd-grid-y-label-name {
+    padding-left: 10px;
+    float: left;
+    width: $axis-y-name-width;
+}
+
+.sd-grid-y-label-schedule {
+    padding-left: 10px;
+    float: left;
+    width: $axis-y-schedule-width;
+    border-left: 1px solid $axis-x-border-color;
+}

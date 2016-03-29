@@ -1,5 +1,5 @@
 angular.module('sdGridModule')
-.factory('sdGridHelper', ['sdGridConstants', function(gridConstants) {
+.factory('sdGridHelper', ['sdGridConstants', function(sdGridConstants) {
 
     // Returns time label from date object
     // E.g. 10:45, 15:00
@@ -9,8 +9,10 @@ angular.module('sdGridModule')
     }
 
     function getRangeItemSize(rangeDates, gridDates) {
+        var rangeEnd = new Date(rangeDates.to.getTime());
+        rangeEnd.setSeconds(rangeEnd.getSeconds() - 30)
         return {
-            width: 100 * (rangeDates.to - rangeDates.from) / (gridDates.to - gridDates.from) + '%',
+            width: 100 * (rangeEnd - rangeDates.from) / (gridDates.to - gridDates.from) + '%',
             left: 100 * (rangeDates.from - gridDates.from) / (gridDates.to - gridDates.from) + '%'
         };
     }
@@ -99,6 +101,7 @@ angular.module('sdGridModule')
 
         return ranges;
 
+        // Returns next period start time fitting conditions and interval
         function getNextStart(conditions, from, to) {
             var date = new Date(from.getTime());
 
@@ -163,20 +166,23 @@ angular.module('sdGridModule')
             }
         }
 
+        // Get week number in month or in year
         function getWeek(date, inMonth) {
             var firstWeek = new Date(date.getFullYear(), 0, 1);
             if (inMonth) {
                 firstWeek.setMonth(date.getMonth());
             }
             firstWeek.setDate(-firstWeek.getDay());
-            return Math.ceil((date - firstWeek) / sdGridConstants.WEEK_MILISEC) + 1;
+            return Math.floor((date - firstWeek) / sdGridConstants.WEEK_MILISEC) + 1;
         }
 
+        // Get day number in year
         function getDateInYear(date) {
             var yearStart = new Date(date.getFullYear(), 0, 1);
-            return Math.ceil((date - yearStart) / sdGridConstants.DAY_MILISEC) + 1;
+            return Math.floor((date - yearStart) / sdGridConstants.DAY_MILISEC) + 1;
         }
 
+        // Check condition
         function checkCondition(value, operator, compareWith) {
             var result;
 
@@ -202,6 +208,13 @@ angular.module('sdGridModule')
                 case '/':
                     result = (value % compareWith) == 0;
                     break;
+                case '!/':
+                    result = (value % compareWith) != 0;
+                    break;
+                case '=/':
+                    var compareParts = compareWith.split(',');
+                    result = (value % compareParts[0]) == compareParts[1];
+                    break;
                 case 'in':
                     var compareList = compareWith.split(',');
                     result = compareList.indexOf(value + '') != -1;
@@ -216,6 +229,7 @@ angular.module('sdGridModule')
         }
     }
 
+    // Grid drag'n'scroll
     function onGridMouseDown(e) {
         // var target = e.target
         // while (target != this) {
@@ -258,6 +272,7 @@ angular.module('sdGridModule')
         e.preventDefault();
     }
 
+    // Grid drag'n'scroll object
     var gridDragScroll = {};
 
     return {
