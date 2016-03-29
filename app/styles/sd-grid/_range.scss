@@ -8,7 +8,7 @@
 
 .sd-grid-schedules {
     position: relative;
-    height: $range-height + $schedule-margin * 2;
+    height: $schedule-height;
     border-bottom: 1px solid $grid-border-color;
 
     &.even {

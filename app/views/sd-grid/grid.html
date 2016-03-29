@@ -16,16 +16,8 @@
     </div>
 
     <div class="sd-grid-y-axis">
-        <div class="sd-grid-y-item" ng-repeat="entity in data" style="min-height: {{entity.schedules.length * 44}}px">
-            <div class="sd-grid-y-item-name">
-                {{entity.name}}
-            </div>
-            <div class="sd-grid-y-item-schedules">
-                <div class="sd-grid-y-item-schedule {{(schedule.daySchedule) ? 'dayschedule' : ''}}" ng-repeat="schedule in entity.schedules">
-                    {{schedule.name}}
-                </div>
-            </div>
-        </div>
+        <sd-grid-entity-person ng-repeat="entity in data" entity="entity"></sd-grid-entity-person>
+       
         <div class="sd-grid-scroll-placeholder-vert"></div>
     </div>
 
@@ -33,11 +25,8 @@
         <div class="sd-grid-ranges-wrapper">
             <div class="sd-grid-ruler"></div>
 
-            <div class="sd-grid-entity" ng-repeat="entity in data" ng-init="$parent.schedulesCounter = schedulesCounter + entity.schedules.length; total = $parent.schedulesCounter">
-                <div class="sd-grid-schedules {{((total + $index - entity.schedules.length) % 2 == 0) ? 'even' : ''}}" ng-repeat="schedule in entity.schedules">
-                    <sd-range ng-repeat="range in schedule.ranges" range-expr="range" grid-dates="dates"></sd-range>
-                </div>
-            </div>
+            <sd-grid-entity-schedules ng-repeat="entity in data" entity="entity" dates="dates"></sd-grid-entity-schedules>
+            
             <div class="sd-grid-now-marker"></div>
         </div>
     </div>

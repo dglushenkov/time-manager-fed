@@ -5,7 +5,7 @@ angular.module('scheduler', ['sdGridModule'])
     function($scope, $http) {
         var zoomScale = [0.25, 0.5, 1, 2, 4, 8];
 
-        $http.get('api/entities1.json').then(function(response) {
+        $http.get('api/entities3.json').then(function(response) {
             $scope.sampleData = response.data;
         })
 

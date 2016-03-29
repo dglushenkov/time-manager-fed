@@ -12,8 +12,9 @@ $schedule-border-color: #dbdbdb;
 $schedule-even-bg: #aaaaaa;
 $entity-border-color: #bcbcbc;
 $schedule-margin: 12px;
-
 $range-height: 20px;
+$schedule-height: 2 * $schedule-margin + $range-height;
+
 $range-default-border-color: #0c6853;
 $range-border-radius: 0px;
 $range-default-bg-image: linear-gradient(to bottom, rgba(#11b465, 0.3) 0%, rgba(#11b465, 0.6) 100%);

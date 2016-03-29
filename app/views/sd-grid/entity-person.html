@@ -1,0 +1,10 @@
+<div class="sd-grid-y-item">
+    <div class="sd-grid-y-item-name">
+        {{entity.name}}
+    </div>
+    <div ng-show="isExpanded" class="sd-grid-y-item-schedules">
+        <div class="sd-grid-y-item-schedule" ng-repeat="schedule in entity.schedules">
+            {{schedule.name}}
+        </div>
+    </div>
+</div>

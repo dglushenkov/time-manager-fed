@@ -17,7 +17,9 @@ angular.module('sdGridModule')
 
         link: function(scope, iElement) {
 
+            // ====================================================================================
             // Grid areas
+            // ====================================================================================
             gridAreas = {
                 body: iElement.find('.sd-grid-body'),
                 rulers: iElement.find('.sd-grid-ruler'),
@@ -31,6 +33,11 @@ angular.module('sdGridModule')
                 nowMarker: iElement.find('.sd-grid-now-marker')
             };
 
+
+            // ====================================================================================
+            // Init grid elements
+            // ====================================================================================
+
             // Internal grid variables container
             gridOptions = {};
 
@@ -43,7 +50,10 @@ angular.module('sdGridModule')
             scope.schedulesCounter = 0;
             gridOptions.nowMarker = initNowMarker();
 
+
+            // ====================================================================================
             // Watchers
+            // ====================================================================================
             scope.$watch('hoursPerCell', function(newValue, oldValue) {
                 if (oldValue != undefined && newValue > oldValue && !gridOptions.isScrollable) {
                     scope.hoursPerCell = oldValue;
@@ -59,6 +69,10 @@ angular.module('sdGridModule')
                 gridAreas.body.scrollLeft(gridHorzScrollFactor * gridAreas.body.get(0).scrollWidth);
             });
 
+
+            // ====================================================================================
+            // Event bindings
+            // ====================================================================================
             // Bind x and y axis scroll to grid scroll
             gridAreas.body.on('scroll', function() {
                 gridAreas.xAxis.scrollLeft(gridAreas.body.scrollLeft());
@@ -77,6 +91,17 @@ angular.module('sdGridModule')
                 }
             });
 
+            iElement.on('click', '.sd-grid-y-item-name', function(e) {
+                var scope = $(e.target).parent('.sd-grid-y-item').data('scope-link');
+                scope.$apply(function() {
+                    scope.isExpanded = !scope.isExpanded;
+                });
+            });
+
+
+            // ====================================================================================
+            // Scope methods
+            // ====================================================================================
             // Increase zoom
             scope.zoomIn = function() {
                 scope.hoursPerCell = sdGridConstants.ZOOM_SCALE[Math.min(
@@ -90,6 +115,10 @@ angular.module('sdGridModule')
                 scope.hoursPerCell = sdGridConstants.ZOOM_SCALE[Math.max(0, sdGridConstants.ZOOM_SCALE.indexOf(scope.hoursPerCell) - 1)];
             }
 
+
+            // ====================================================================================
+            // Service funcitons
+            // ====================================================================================
             // Draw grid rulers
             function drawRulers() {
                 var xAxisTimeHtml = '';

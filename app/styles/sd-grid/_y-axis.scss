@@ -16,13 +16,12 @@
 .sd-grid-y-item-name {
     padding: 0 10px;
     padding-top: $schedule-margin;
-    float: left;
-    width: $axis-y-name-width;
+    height: $schedule-height;
+    cursor: pointer;
+    @extend .select-none;
 }
 
 .sd-grid-y-item-schedules {
-    float: left;
-    width: $axis-y-schedule-width;
     font-size: 12px;
 }
 
@@ -30,7 +29,7 @@
     padding: 0 10px;
     border-left: 1px solid $axis-y-border-color;
     padding-top: $schedule-margin + 2;
-    height: $range-height + 2 * $schedule-margin;
+    height: $schedule-height;
     text-align: left;
     border-bottom: 1px solid $axis-y-border-color;
     white-space: nowrap;
