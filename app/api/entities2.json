@@ -8,6 +8,12 @@
     }, {
         "name": "Ticket #2",
         "ranges": ["2016.03.30.15:10-1:00"]
+    }, {
+        "name": "Ticket #2",
+        "ranges": ["2016.03.30.15:10-1:00"]
+    }, {
+        "name": "Ticket #2",
+        "ranges": ["2016.03.30.15:10-1:00"]
     }],
     "workSchedule": {
         "name": "Day schedule",

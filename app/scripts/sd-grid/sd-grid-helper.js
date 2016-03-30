@@ -9,10 +9,8 @@ angular.module('sdGridModule')
     }
 
     function getRangeItemSize(rangeDates, gridDates) {
-        var rangeEnd = new Date(rangeDates.to.getTime());
-        rangeEnd.setSeconds(rangeEnd.getSeconds() - 30)
         return {
-            width: 100 * (rangeEnd - rangeDates.from) / (gridDates.to - gridDates.from) + '%',
+            width: 100 * (rangeDates.to - rangeDates.from) / (gridDates.to - gridDates.from) + '%',
             left: 100 * (rangeDates.from - gridDates.from) / (gridDates.to - gridDates.from) + '%'
         };
     }
