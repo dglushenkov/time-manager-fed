@@ -2,9 +2,9 @@
     float: left;
     width: 100%;
     overflow: hidden;
-    border-bottom: 1px solid $axis-x-border-color;
-    background-color: $axis-x-bg;
-    color: $axis-x-color;
+    border-bottom: 1px solid $shd-axis-x-border-color;
+    background-color: $shd-axis-x-bg;
+    color: $shd-axis-x-color;
 }
 
 .sd-grid-x-axis {
@@ -27,20 +27,20 @@
 .sd-grid-axis-time-item {
     float: left;
     text-align: left;
-    border-right: 1px solid $axis-x-border-color;
-    width: $cell-width;
+    border-right: 1px solid $shd-axis-x-border-color;
+    width: $shd-cell-width;
     font-size: 12px;
-    height: $axis-x-height;
-    line-height: $axis-x-height;
+    height: $shd-axis-x-height;
+    line-height: $shd-axis-x-height;
     padding-left: 5px;
 }
 
 .sd-grid-y-label {
     float: left;
-    width: $axis-y-width;
-    border-right: 1px solid $axis-x-border-color;
-    height: $axis-x-height;
-    line-height: $axis-x-height;
+    width: $shd-axis-y-width;
+    border-right: 1px solid $shd-axis-x-border-color;
+    height: $shd-axis-x-height;
+    line-height: $shd-axis-x-height;
     padding-left: 10px;
     cursor: pointer;
     @extend .select-none;

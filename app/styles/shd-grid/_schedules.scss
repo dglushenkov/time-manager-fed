@@ -28,20 +28,20 @@
 
 .sd-grid-schedule {
     position: relative;
-    height: $schedule-height;
-    border-bottom: 1px solid $grid-border-color;
+    height: $shd-schedule-height;
+    border-bottom: 1px solid $shd-grid-border-color;
 
     &.dayschedule {
-        height: $dayschedule-height;
+        height: $shd-dayschedule-height;
     }
 
     &.dayschedule {
         .sd-grid-range {
-            background: rgba($range-dayschedule-bg, $range-opacity);
-            border-color: $range-dayschedule-bg;
-            height: $dayschedule-range-height;
+            background: rgba($shd-range-dayschedule-bg, $shd-range-opacity);
+            border-color: $shd-range-dayschedule-bg;
+            height: $shd-dayschedule-range-height;
             font-size: 10px;
-            border-radius: $range-border-radius;
+            border-radius: $shd-range-border-radius;
             cursor: auto;
         }
     }
@@ -49,11 +49,11 @@
 
 .sd-grid-range {
     position: absolute;
-    top: $schedule-margin;
-    background: rgba($range-default-bg, $range-opacity);
-    border: 1px solid $range-default-bg;
-    height: $range-height;
+    top: $shd-schedule-margin;
+    background: rgba($shd-range-default-bg, $shd-range-opacity);
+    border: 1px solid $shd-range-default-bg;
+    height: $shd-range-height;
     font-size: 10px;
-    border-radius: $range-border-radius;
+    border-radius: $shd-range-border-radius;
     cursor: auto;
 }

@@ -8,7 +8,7 @@
 
 .sd-grid-body {
     float: left;
-    width: calc(100% - #{$axis-y-width});
+    width: calc(100% - #{$shd-axis-y-width});
     overflow-y: scroll;
     overflow-x: scroll;
     position: relative;

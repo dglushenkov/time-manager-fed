@@ -159,7 +159,7 @@ gulp.task('api', function() {
 
 //Copies static data (images, fonts)
 gulp.task('assets', function() {
-    return gulp.src(paths.assets)
+    return gulp.src(paths.assets, {base: 'app/'})
         .pipe(gulp.dest('dist/assets'))
         .pipe(livereload());
 });

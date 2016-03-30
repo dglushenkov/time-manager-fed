@@ -1,13 +1,14 @@
-angular.module('sdGridModule')
-.factory('sdGridHelper', ['sdGridConstants', function(sdGridConstants) {
+angular.module('shdGridModule')
+.factory('shdGridHelper', ['shdGridConst', function(shdGridConst) {
 
-    // Returns time label from date object
-    // E.g. 10:45, 15:00
-    function timeToHhmm(time) {
-        return ('0' + time.getHours()).slice(-2) + ':' 
-            + ('0' + time.getMinutes()).slice(-2);
+    // Get time label from Date Object
+    // E.g. Date to '10:45'
+    function dateToHhmm(date) {
+        return ('0' + date.getHours()).slice(-2) + ':' 
+            + ('0' + date.getMinutes()).slice(-2);
     }
 
+    // Get range DOM element sizes from range and grid date intervals
     function getRangeItemSize(rangeDates, gridDates) {
         return {
             width: 100 * (rangeDates.to - rangeDates.from) / (gridDates.to - gridDates.from) + '%',
@@ -15,14 +16,85 @@ angular.module('sdGridModule')
         };
     }
 
-    // Parse range string to range dates object
-    function parseRangeDatesExpr(rangeExpr, gridDates) {
-        var rangeExprParts = rangeExpr.split('-');
+    //=============================================================================================================
+    // Parse range dates string to range dates objects
+    // 
+    // Range dates string must be in format '[<date>|<expression>]/<time>/<duration>'
+    //      <date> - date string in format ISO 8601 'YYYY-MM-DD'
+    //
+    //      <expression> - expression to check in format '(<condition>[;<condition>])'
+    //          <condition> - condition string in format '<value_to_compare><operator><compare_with>'
+    //              conditions are applied with logical AND operation
+    //              
+    //              <value_to_compare> - can be one of the following:
+    //                  'y' - year
+    //                  'm' - month
+    //                  'w' - week number in year
+    //                  'wm' - week number in month
+    //                  'd' - day in month
+    //                  'dw' - day in week
+    //                  'dy' - day in year
+    //              <operator> - one of the following:
+    //                  '=' - equal or one of <compare_with> items if <compare_with> is a comma separated list e.g. 1,2,4,6
+    //                  '!=' - not equal or not one of <compare_with> items if <compare_with> is a comma separated list e.g. 1,2,4,6
+    //                  '>' - greater than
+    //                  '<' - less than
+    //                  '>=' - greater than or equal
+    //                  '<=' - less than or equal
+    //                  '/' - <value_to_compare> mod <compare_with> == 0
+    //                  '!/' - <value_to_compare> mod <compare_with> != 0
+    //                  '/=' - <value_to_compare> mod <compare_with>[0] == <compare_with>[1] 
+    //                      <compare_with> must be a comma separated list with two values e.g. 1,2
+    //                      
+    //              <compare_with> - number or comma separated list of numbers
+    //      
+    //      <time> - time string in format ISO 8601 'HH:MM[<timezone>]'
+    //          <timezone> - timezone in ISO 8601 format e.g. 'Z+02:00'
+    //      
+    //      <duration> - duration string in format '<duration_expr>|<minutes_amount>'
+    //          <minutes_amount> - number of minutes
+    //          <duration_expr> - duration expression string in format '<days_amount>d||<hours_amount>h||<minutes_amount>m'
+    //=============================================================================================================
+    function parseRangeDatesStr(rangeStr, gridDates) {
+        // Not a string
+        if (typeof(rangeStr) != 'string') return;
+
+        var rangeExprParts = rangeStr.split('/');
+        // Invalid format
+        if (rangeExprParts.length != 3) return;
+
+        var date = rangeExprParts[0].trim();
+        var time = rangeExprParts[1].trim();
+        var duration = parseDurationStr(rangeExprParts[2].trim());
+        // Date, time or duration is empty
+        if (!date || !time || !duration) return;
         var ranges = [];
 
-        // RangeExpr is not periodical
-        // E.g. 2016.03.02.13:00-05:30
-        // Start at 2 March 2016 13.00, duration 5:30h
+
+        // First part is not expression
+        if (date.charAt(0) != '(') {
+            var startDate = new Date(date + time);
+            // Invalid date or time
+            if (isNaN(startDate.getTime())) return;
+
+            var endDate = new Date(startDate.getTime() + duration);
+            var range = {
+                from: startDate,
+                actualTo: endDate,
+                duration: duration,
+            };
+            range.to = (range.actualTo > gridDates.to) ? new Date(gridDates.to.getTime()) : range.actualTo;
+            ranges.push(range);
+
+
+        // First part is an expression
+        } else {
+            var conditions = parseRangeConditions(date);
+            // Invalid conditions
+            if (!condition) return;
+        }
+
+
         if (rangeExprParts.length == 2) {
             var range = {};
             range.from = new Date(rangeExprParts[0]);
@@ -171,13 +243,13 @@ angular.module('sdGridModule')
                 firstWeek.setMonth(date.getMonth());
             }
             firstWeek.setDate(-firstWeek.getDay());
-            return Math.floor((date - firstWeek) / sdGridConstants.WEEK_MILISEC) + 1;
+            return Math.floor((date - firstWeek) / shdGridConst.WEEK_MILISEC) + 1;
         }
 
         // Get day number in year
         function getDateInYear(date) {
             var yearStart = new Date(date.getFullYear(), 0, 1);
-            return Math.floor((date - yearStart) / sdGridConstants.DAY_MILISEC) + 1;
+            return Math.floor((date - yearStart) / shdGridConst.DAY_MILISEC) + 1;
         }
 
         // Check condition
@@ -225,6 +297,152 @@ angular.module('sdGridModule')
 
             return result;
         }
+    }
+
+    // Duration string multipliers
+    var durationMultipliers = [
+        { 
+            char: 'd',
+            value: shdGridConst.D_MS 
+        },
+        { 
+            char: 'h',
+            value: shdGridConst.H_MS 
+        },
+        { 
+            char: 'm',
+            value: shdGridConst.M_MS 
+        }
+    ];
+
+    // Parse duration string to number of millisecond
+    function parseDurationStr(durationStr) {
+        var durationMs = 0;
+        var pos = 0;
+        var mltCounter = 0;
+
+        while (pos < durationStr.length && mltCounter < durationMultipliers.length) {
+            var multiplierPos = durationStr.indexOf(durationMultipliers[mltCounter].char, pos);
+
+            // If multiplier is found
+            if (~multiplierPos) {
+                mltStr = durationStr.slice(pos, multiplierPos);
+                // Multiplier has no value before
+                if (!mltStr) return;
+                durationMs += durationMultipliers[mltCounter].value * mltStr;
+                // Invalid multiplier string value
+                if (isNaN(durationMs)) return;
+                pos = multiplierPos + 1;
+            }
+
+            mltCounter++;
+        }
+
+        // If no multipliers in duration string suggest minutes amount
+        if (pos == 0) {
+            durationMs = durationStr * shdGridConst.M_MS;
+            if (isNaN(durationMs)) return;
+        }
+
+        return durationMs;
+    }
+
+    var compareFuncs = {
+        '=': function(value, compare) {
+
+        },
+        '!=': function(value, compare) {
+
+        },
+        '>': function(value, compare) {
+
+        },
+        '<': function(value, compare) {
+
+        },
+        '>=': function(value, compare) {
+
+        },
+        '<=': function(value, compare) {
+
+        },
+        '/': function(value, compare) {
+
+        },
+        '!/': function(value, compare) {
+
+        },
+        '/=': function(value, compare) {
+
+        }
+    };
+
+    var conditionOptions = {
+        'y': {
+                getValue: function(date) {
+                    return date.getFullYear();
+                },
+                add: function(date) {
+
+                }
+            },
+        'm': {
+                getValue: function(date) {
+                    return date.getMonth();
+                },
+                add: function(date) {
+
+                }
+            },
+        'w': {
+                getValue: function(date) {
+                    var firstWeek = new Date(date.getFullYear());
+                    firstWeek.setDate(-firstWeek.getDay());
+                    return Math.floor((date - firstWeek) / shdGridConst.W_MS) + 1;
+                },
+                add: function(date) {
+
+                }
+            },
+        'wm': {
+                getValue: function(date) {
+                    var firstWeek = new Date(date.getFullYear(), date.getMonth());
+                    firstWeek.setDate(-firstWeek.getDay());
+                    return Math.floor((date - firstWeek) / shdGridConst.W_MS) + 1;
+                },
+                add: function(date) {
+
+                }
+            },
+        'dw': {
+                getValue: function(date) {
+                    return date.getDay();
+                },
+                add: function(date) {
+
+                }
+            },
+        'dm': {
+                getValue: function(date) {
+                    return date.getDate();
+                },
+                add: function(date) {
+
+                }
+            },
+        'd': {
+                getValue: function(date) {
+                    var yearStart = new Date(date.getFullYear());
+                    return Math.floor((date - yearStart) / shdGridConst.D_MS) + 1;
+                },
+                add: function(date) {
+
+                }
+            }
+    };
+
+    function parseRangeConditions(str) {
+
     }
 
     // Grid drag'n'scroll

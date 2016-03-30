@@ -1,0 +1,41 @@
+$shd-cell-width: 70px;
+$shd-grid-border-color: rgba(#ccc, .5);
+
+$shd-axis-x-color: #d5dde5;
+$shd-axis-x-bg: #303540;
+$shd-axis-x-height: 40px;
+$shd-axis-x-border-color: #3d4554;
+
+$shd-axis-y-width: 25%;
+$shd-axis-y-bg: #51556a;
+$shd-axis-y-border-color: #454858;
+$shd-axis-y-color: #fff;
+
+$shd-now-marker-color: rgba(#f93737, .5);
+$shd-now-marker-z-index: 10;
+
+$shd-schedule-border-color: #dbdbdb;
+$shd-schedule-even-bg: #aaaaaa;
+$shd-entity-border-color: #bcbcbc;
+$shd-schedule-margin: 12px;
+$shd-range-height: 20px;
+$shd-dayschedule-range-height: 25px;
+$shd-schedule-height: 2 * $shd-schedule-margin + $shd-range-height;
+$shd-dayschedule-height: 2 * $shd-schedule-margin + $shd-dayschedule-range-height;
+
+$shd-range-border-radius: 0px;
+$shd-range-default-bg: #2980B9;
+$shd-range-dayschedule-bg: #27AE60;
+$shd-range-opacity: 0.4;
+
+$shd-status-border-width: 10px;
+$shd-status-active-color: #27AE60;
+$shd-status-busy-color: #d86565;
+$shd-status-inactive-color: #d0d0d0;
+
+@import '_grid';
+@import '_x-axis';
+@import '_y-axis';
+@import '_rulers';
+@import '_schedules';
+

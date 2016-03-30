@@ -1,10 +1,10 @@
 .sd-grid-y-axis {
     float: left;
-    width: $axis-y-width;
+    width: $shd-axis-y-width;
     overflow-y: hidden;
-    border-right: 1px solid $axis-y-border-color;
-    background-color: $axis-y-bg;
-    color: $axis-y-color;
+    border-right: 1px solid $shd-axis-y-border-color;
+    background-color: $shd-axis-y-bg;
+    color: $shd-axis-y-color;
 }
 
 .sd-grid-y-item {
@@ -12,28 +12,28 @@
 
     &.person-status-active {
         .sd-grid-y-item-status {
-            background-color: $status-active-color;
+            background-color: $shd-status-active-color;
         }
         .sd-grid-y-item-avatar {
-            border-color: $status-active-color;
+            border-color: $shd-status-active-color;
         }
     }
 
     &.person-status-inactive {
         .sd-grid-y-item-status {
-            background-color: $status-inactive-color;
+            background-color: $shd-status-inactive-color;
         }
         .sd-grid-y-item-avatar {
-            border-color: $status-inactive-color;
+            border-color: $shd-status-inactive-color;
         }
     }
 
     &.person-status-busy {
         .sd-grid-y-item-status {
-            background-color: $status-busy-color;
+            background-color: $shd-status-busy-color;
         }
         .sd-grid-y-item-avatar {
-            border-color: $status-busy-color;
+            border-color: $shd-status-busy-color;
         }
     }
 
@@ -47,13 +47,13 @@
 }
 
 .sd-grid-y-item-title {
-    padding: 0 $status-border-width 0 10px;
-    border-bottom: 1px solid $axis-y-border-color;
+    padding: 0 $shd-status-border-width 0 10px;
+    border-bottom: 1px solid $shd-axis-y-border-color;
     padding-top: 6px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    height: $dayschedule-height;
+    height: $shd-dayschedule-height;
     cursor: pointer;
     position: relative;
     @extend .select-none;
@@ -74,7 +74,7 @@
     right: 0;
     bottom: 0;
     top: 0;
-    width: $status-border-width;
+    width: $shd-status-border-width;
 }
 
 .sd-grid-y-item-schedules {
@@ -100,11 +100,11 @@
 
 .sd-grid-y-item-schedule {
     padding: 0 10px 0 20px;
-    border-left: 1px solid $axis-y-border-color;
-    padding-top: $schedule-margin + 2;
-    height: $schedule-height;
+    border-left: 1px solid $shd-axis-y-border-color;
+    padding-top: $shd-schedule-margin + 2;
+    height: $shd-schedule-height;
     text-align: left;
-    border-bottom: 1px solid $axis-y-border-color;
+    border-bottom: 1px solid $shd-axis-y-border-color;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

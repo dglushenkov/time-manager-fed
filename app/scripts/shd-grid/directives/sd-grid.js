@@ -41,6 +41,14 @@ angular.module('sdGridModule')
             // Internal grid variables container
             gridOptions = {};
             scope.sortReverse = false;
+            scope.datepicker = {
+                isOpen: false,
+                open: function() {
+                    scope.datepicker.isOpen = true;
+                    console.log('123');
+                }
+            }
+            scope.date = new Date();
 
             gridAreas.body.height(scope.height);
             gridAreas.yAxis.height(scope.height);

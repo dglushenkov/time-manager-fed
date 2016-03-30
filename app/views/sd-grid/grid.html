@@ -4,8 +4,20 @@
             <input type="text" ng-model="name" ng-model-options="{ debounce: 400 }">
         </div>
         <div class="sd-grid-caption">
-            <button ng-click="setZoom(-1)">Zoom +</button>
-            <button ng-click="setZoom(1)">Zoom -</button>
+            <div class="sd-grid-zoom-controls">
+                <button ng-click="setZoom(-1)">Zoom +</button>
+                <button ng-click="setZoom(1)">Zoom -</button>
+            </div>
+            <div class="sd-grid-caption-date" ng-click="datepicker.open()">{{date}}</div>
+            <input type="text" class="form-control" style="visibility: hidden;"
+                uib-datepicker-popup="dd-MMMM-yyyy"
+                ng-model="date"
+                is-open="datepicker.isOpen"/>
+            <div class="sd-grid-nav-controls">
+                <button>Today</button>
+                <button>Prev</button>
+                <button>Next</button>
+            </div>
         </div>
     </div>
     <div class="sd-grid-x-axis-wrapper">
