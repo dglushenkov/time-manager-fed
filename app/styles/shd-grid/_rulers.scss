@@ -1,11 +1,11 @@
-.sd-grid-ruler {
+.shd-grid-ruler {
     position: absolute;
     left: 0;
     right: 0;
     top: 0;
     height: 100%;
 
-    .sd-ruler-item {
+    .shd_ruler-item {
         float: left;
         text-align: center;
         height: 100%;
@@ -17,7 +17,7 @@
 }
 
 // Now Marker
-.sd-grid-now-marker {
+.shd-grid-now-marker {
     width: 3px;
     background-color: $shd-now-marker-color;
     position: absolute;

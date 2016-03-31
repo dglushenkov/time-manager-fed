@@ -1,4 +1,4 @@
-.sd-grid-x-axis-wrapper {
+.shd-grid-x-axis-wrapper {
     float: left;
     width: 100%;
     overflow: hidden;
@@ -7,35 +7,37 @@
     color: $shd-axis-x-color;
 }
 
-.sd-grid-x-axis {
+.shd-grid-x-axis {
     overflow: hidden;
 
-    .axis-time {
+    .shd_axis-time {
         @extend .clearfix;
+    }
+
+    .shd_time-item {
+        float: left;
+        text-align: left;
+        border-right: 1px solid $shd-axis-x-border-color;
+        width: $shd-cell-width;
+        font-size: 12px;
+        height: $shd-axis-x-height;
+        line-height: $shd-axis-x-height;
+        padding-left: 5px;
     }
 }
 
-.sd-grid-scroll-placeholder-horz {
+.shd-grid-scroll-placeholder-horz {
     float: right;
     height: 1px;
 }
 
-.sd-grid-scroll-placeholder-vert {
+.shd-grid-scroll-placeholder-vert {
     width: 1px;
 }
 
-.sd-grid-axis-time-item {
-    float: left;
-    text-align: left;
-    border-right: 1px solid $shd-axis-x-border-color;
-    width: $shd-cell-width;
-    font-size: 12px;
-    height: $shd-axis-x-height;
-    line-height: $shd-axis-x-height;
-    padding-left: 5px;
-}
 
-.sd-grid-y-label {
+
+.shd-grid-y-label {
     float: left;
     width: $shd-axis-y-width;
     border-right: 1px solid $shd-axis-x-border-color;

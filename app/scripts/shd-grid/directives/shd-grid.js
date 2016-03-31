@@ -1,9 +1,9 @@
-angular.module('sdGridModule')
+angular.module('shdGridModule')
 
-// sd-grid directive
-.directive('sdGrid', [
-    'sdGridHelper', 'sdGridConstants',
-    function(sdGridHelper, sdGridConstants) {
+// shd-grid directive
+.directive('shdGrid', [
+    'shdGridHelper', 'shdGridConst',
+    function(shdGridHelper, shdGridConst) {
 
     return {
         restrict: 'AE',
@@ -13,7 +13,7 @@ angular.module('sdGridModule')
             zoom: '=',
             height: '@',
         },
-        templateUrl: 'views/sd-grid/grid.html',
+        templateUrl: 'views/shd-grid/grid.html',
 
         link: function(scope, iElement) {
 
@@ -21,16 +21,16 @@ angular.module('sdGridModule')
             // Grid areas
             // ====================================================================================
             gridAreas = {
-                body: iElement.find('.sd-grid-body'),
-                rulers: iElement.find('.sd-grid-ruler'),
-                yAxis: iElement.find('.sd-grid-y-axis'),
-                xAxis: iElement.find('.sd-grid-x-axis'),
-                xAxisTime: iElement.find('.sd-grid-x-axis .axis-time'),
-                xAxisDay: iElement.find('.sd-grid-x-axis .axis-day'),
-                rangesWrapper: iElement.find('.sd-grid-ranges-wrapper'),
-                scrollPlaceholderHorz: iElement.find('.sd-grid-scroll-placeholder-horz'),
-                scrollPlaceholderVert: iElement.find('.sd-grid-scroll-placeholder-vert'),
-                nowMarker: iElement.find('.sd-grid-now-marker')
+                body: iElement.find('.shd-grid-body'),
+                rulers: iElement.find('.shd-grid-ruler'),
+                yAxis: iElement.find('.shd-grid-y-axis'),
+                xAxis: iElement.find('.shd-grid-x-axis'),
+                xAxisTime: iElement.find('.shd_axis-time'),
+                xAxishDay: iElement.find('.shd_axis-day'),
+                rangesWrapper: iElement.find('.shd_ranges-wrapper'),
+                scrollPlaceholderHorz: iElement.find('.shd-grid-scroll-placeholder-horz'),
+                scrollPlaceholderVert: iElement.find('.shd-grid-scroll-placeholder-vert'),
+                nowMarker: iElement.find('.shd-grid-now-marker')
             };
 
 
@@ -52,10 +52,10 @@ angular.module('sdGridModule')
 
             gridAreas.body.height(scope.height);
             gridAreas.yAxis.height(scope.height);
-            gridAreas.scrollPlaceholderHorz.width(sdGridConstants.SCROLLBAR_WIDTH);
-            gridAreas.scrollPlaceholderVert.height(sdGridConstants.SCROLLBAR_WIDTH);
-            gridAreas.rulers.css('min-height', scope.height - sdGridConstants.SCROLLBAR_WIDTH);
-            gridAreas.nowMarker.css('min-height', scope.height - sdGridConstants.SCROLLBAR_WIDTH);
+            gridAreas.scrollPlaceholderHorz.width(shdGridConst.SCROLLBAR_WIDTH);
+            gridAreas.scrollPlaceholderVert.height(shdGridConst.SCROLLBAR_WIDTH);
+            gridAreas.rulers.css('min-height', scope.height - shdGridConst.SCROLLBAR_WIDTH);
+            gridAreas.nowMarker.css('min-height', scope.height - shdGridConst.SCROLLBAR_WIDTH);
             scope.schedulesCounter = 0;
             gridOptions.nowMarker = initNowMarker();
 
@@ -66,7 +66,7 @@ angular.module('sdGridModule')
             scope.$watch('hoursPerCell', function(value) {
                 var gridHorzScrollFactor = gridAreas.body.scrollLeft() / gridAreas.body.get(0).scrollWidth;
 
-                gridOptions.cellCount = (scope.dates.to - scope.dates.from) / sdGridConstants.HOUR_MILISEC / value;
+                gridOptions.cellCount = (scope.dates.to - scope.dates.from) / shdGridConst.H_MS / value;
                 gridOptions.isScrollable = needScroll();
 
                 drawRulers();
@@ -75,10 +75,10 @@ angular.module('sdGridModule')
 
             scope.$watch('zoom', function(value) {
                 var newZoom = value;
-                newZoom = Math.min(sdGridConstants.ZOOM_SCALE.length - 1, newZoom);
+                newZoom = Math.min(shdGridConst.ZOOM_SCALE.length - 1, newZoom);
                 newZoom = Math.max(0, newZoom);
                 scope.zoom = newZoom;
-                scope.hoursPerCell = sdGridConstants.ZOOM_SCALE[newZoom];
+                scope.hoursPerCell = shdGridConst.ZOOM_SCALE[newZoom];
             })
 
 
@@ -92,7 +92,7 @@ angular.module('sdGridModule')
             });
 
             // drag'n'scroll on grid mousedown event
-            gridAreas.body.on('mousedown.dragScroll', sdGridHelper.onGridMouseDown);
+            gridAreas.body.on('mousedown.dragScroll', shdGridHelper.onGridMouseDown);
 
             // Check if grid needs horizontal scroll after window resize
             $(window).on('resize', function() {
@@ -104,15 +104,15 @@ angular.module('sdGridModule')
             });
 
             // Expand person shedules
-            iElement.on('click', '.sd-grid-y-item-title', function(e) {
-                var scope = $(e.target).parents('.sd-grid-y-item').data('scope-link');
+            iElement.on('click', '.shd-grid-y-item-title', function(e) {
+                var scope = $(e.target).parents('.shd-grid-y-item').data('scope-link');
                 scope.$apply(function() {
                     scope.entity.isExpanded = !scope.entity.isExpanded;
                 });
             });
 
             // Y axis mousewheel scroll
-            iElement.on('mousewheel', '.sd-grid-y-axis', function(e) {
+            iElement.on('mousewheel', '.shd-grid-y-axis', function(e) {
                 var dy = e.deltaFactor * e.deltaY;
                 gridAreas.body.scrollTop(gridAreas.body.scrollTop() - dy);
             });
@@ -141,9 +141,9 @@ angular.module('sdGridModule')
 
                 var timeCounter = new Date(scope.dates.from.getTime());
                 for (var i = 0; i < gridOptions.cellCount; i++) {
-                    xAxisTimeHtml += sdGridConstants.TIME_LABEL_TPL
-                        .replace('%t', sdGridHelper.timeToHhmm(timeCounter))
-                    rulerHtml += sdGridConstants.RULER_TPL;
+                    xAxisTimeHtml += shdGridConst.X_AXIS_TIME_TPL
+                        .replace('%t', shdGridHelper.dateToHhmm(timeCounter))
+                    rulerHtml += shdGridConst.RULER_TPL;
 
                     timeCounter = new Date(timeCounter.getTime() + timeInterval);
                 }
@@ -152,26 +152,26 @@ angular.module('sdGridModule')
                 gridAreas.xAxisTime.html(xAxisTimeHtml);
 
                 var cellWidth = (gridOptions.isScrollable) ? '' : 100 / gridOptions.cellCount + '%';
-                var totalWidth = (gridOptions.isScrollable) ? sdGridConstants.CELL_WIDTH * gridOptions.cellCount : '';
+                var totalWidth = (gridOptions.isScrollable) ? shdGridConst.CELL_WIDTH * gridOptions.cellCount : '';
 
                 gridAreas.rulers
                     .add(gridAreas.xAxisTime)
                     .add(gridAreas.xAxisDay)
                     .add(gridAreas.rangesWrapper)
                     .width(totalWidth);
-                $(gridAreas.xAxisTime).find('.sd-grid-axis-time-item').css('width', cellWidth);
-                $(gridAreas.rulers).find('.sd-ruler-item').css('width', cellWidth);
+                $(gridAreas.xAxisTime).find('.shd_time-item').css('width', cellWidth);
+                $(gridAreas.rulers).find('.shd_ruler-item').css('width', cellWidth);
             }
 
             // Checks if grid needs horizontal scroll
             function needScroll() {
-                return gridOptions.cellCount * sdGridConstants.CELL_WIDTH > gridAreas.body.width() - sdGridConstants.SCROLLBAR_WIDTH;
+                return gridOptions.cellCount * shdGridConst.CELL_WIDTH > gridAreas.body.width() - shdGridConst.SCROLLBAR_WIDTH;
             }
 
             // Initialize now marker timer
             function initNowMarker() {
                 updateNowMarker();
-                return setInterval(updateNowMarker, sdGridConstants.MIN_MILISEC);
+                return setInterval(updateNowMarker, shdGridConst.M_MS);
 
                 function updateNowMarker() {
                     var now = new Date();

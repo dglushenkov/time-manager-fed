@@ -1,11 +1,19 @@
 [{
     "name": "Nazarov Victor",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [{
-        "name": "Ticket #1",
-        "ranges": ["2016.03.29.12:15-3:00"]
+        "name": "Ticket #1 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur odit nulla soluta, molestiae, dignissimos sequi corporis, eaque in quos quaerat temporibus dolorem quo incidunt similique et vero magni unde ratione!",
+        "ranges": ["2016-03-30/12:15/3h"]
     }, {
         "name": "Ticket #2",
-        "ranges": ["2016.03.29.15:10-1:00"]
+        "ranges": ["2016.03.30.15:10-1:00"]
+    }, {
+        "name": "Ticket #2",
+        "ranges": ["2016.03.30.15:10-1:00"]
+    }, {
+        "name": "Ticket #2",
+        "ranges": ["2016.03.30.15:10-1:00"]
     }],
     "workSchedule": {
         "name": "Day schedule",
@@ -13,55 +21,113 @@
     }
 }, {
     "name": "Nazarov Evgeny",
-    "schedules": [],
+    "status": "busy",
+    "avatar": "assets/placeholder.png",
+    "schedules": [{
+        "name": "Ticket #1",
+        "ranges": ["2016.03.30.12:15-3:00"]
+    }, {
+        "name": "Ticket #2",
+        "ranges": ["2016.03.30.15:10-1:00"]
+    }],
     "workSchedule": {
         "name": "Day schedule",
         "ranges": ["dw in 1,2,3,4,5-11:00-6:00", "dw in 1,2,3,4,5-19:00-2:00"]
     }
 }, {
     "name": "Volosojar Alexei",
-    "schedules": [],
+    "status": "active",
+    "avatar": "assets/placeholder.png",
+    "schedules": [{
+        "name": "Ticket #1",
+        "ranges": ["2016.03.30.12:15-3:00"]
+    }, {
+        "name": "Ticket #2",
+        "ranges": ["2016.03.30.15:10-1:00"]
+    }],
     "workSchedule": {
         "name": "Day schedule",
         "ranges": ["dw in 1,2,3,4,5-9:30-8:00"]
     }
 }, {
     "name": "Vyacheslav Gaydarzhi",
-    "schedules": [],
+    "status": "active",
+    "avatar": "assets/placeholder.png",
+    "schedules": [{
+        "name": "Ticket #1",
+        "ranges": ["2016.03.30.12:15-3:00"]
+    }, {
+        "name": "Ticket #2",
+        "ranges": ["2016.03.30.15:10-1:00"]
+    }],
     "workSchedule": {
         "name": "Day schedule",
         "ranges": ["dw in 1,2,3,4,5-10:00-8:00"]
     }
 }, {
     "name": "Bevzuk Sergei",
-    "schedules": [],
+    "status": "busy",
+    "avatar": "assets/placeholder.png",
+    "schedules": [{
+        "name": "Ticket #1",
+        "ranges": ["2016.03.30.12:15-3:00"]
+    }, {
+        "name": "Ticket #2",
+        "ranges": ["2016.03.30.15:10-1:00"]
+    }],
     "workSchedule": {
         "name": "Day schedule",
         "ranges": ["dw in 1,2,3,4,5-11:00-3:00", "dw in 1,2,3,4,5-14:30-3:30", "dw in 1,2,3,4,5-20:00-1:30"]
     }
 }, {
     "name": "Petrenko Yana",
-    "schedules": [],
+    "status": "inactive",
+    "avatar": "assets/placeholder.png",
+    "schedules": [{
+        "name": "Ticket #1",
+        "ranges": ["2016.03.30.12:15-3:00"]
+    }, {
+        "name": "Ticket #2",
+        "ranges": ["2016.03.30.15:10-1:00"]
+    }],
     "workSchedule": {
         "name": "Day schedule",
         "ranges": ["dw in 1,2,3,4,5-10:30-8:00"]
     }
 }, {
     "name": "Kolga Elena",
-    "schedules": [],
+    "status": "inactive",
+    "avatar": "assets/placeholder.png",
+    "schedules": [{
+        "name": "Ticket #1",
+        "ranges": ["2016.03.30.12:15-3:00"]
+    }, {
+        "name": "Ticket #2",
+        "ranges": ["2016.03.30.15:10-1:00"]
+    }],
     "workSchedule": {
         "name": "Day schedule",
         "ranges": ["dw in 1,2,3,4,5-11:30-6:00", "dw in 1,2,3,4,5-19:00-2:00"]
     }
 }, {
     "name": "Kleimenov Jaroslav",
-    "schedules": [],
+    "status": "inactive",
+    "avatar": "assets/placeholder.png",
+    "schedules": [{
+        "name": "Ticket #1",
+        "ranges": ["2016.03.30.12:15-3:00"]
+    }, {
+        "name": "Ticket #2",
+        "ranges": ["2016.03.30.15:10-1:00"]
+    }],
     "workSchedule": {
         "name": "Day schedule",
         "ranges": ["dw in 1,2,3,4,5-10:00-5:00", "dw in 1,2,3,4,5-15:30-3:00"]
     }
 }, {
     "name": "Monzul Anatoly",
+    "status": "inactive",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -69,6 +135,8 @@
     }
 }, {
     "name": "Gayduchok Ruslan",
+    "status": "inactive",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -76,6 +144,8 @@
     }
 }, {
     "name": "Katrushko Arthur",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -83,6 +153,8 @@
     }
 }, {
     "name": "Molochko Vitaliy",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -90,6 +162,8 @@
     }
 }, {
     "name": "Parkhomenko Ihor",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -97,6 +171,8 @@
     }
 }, {
     "name": "Silvestrov Victor",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -104,6 +180,8 @@
     }
 }, {
     "name": "Poddubny Andrei",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -111,6 +189,8 @@
     }
 }, {
     "name": "Besarab Oleksij",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -118,6 +198,8 @@
     }
 }, {
     "name": "Chepurnyi Andrii",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -125,6 +207,8 @@
     }
 }, {
     "name": "Drobot Maks",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -132,6 +216,8 @@
     }
 }, {
     "name": "Krivorucko Igor",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -139,6 +225,8 @@
     }
 }, {
     "name": "Glushenkov Dmitry",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -146,6 +234,8 @@
     }
 }, {
     "name": "Solovei Serhii",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -153,6 +243,8 @@
     }
 }, {
     "name": "Balahanov Alexandr",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -160,6 +252,8 @@
     }
 }, {
     "name": "Mazepa Vladyslav",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -167,6 +261,8 @@
     }
 }, {
     "name": "Lalak Oksana",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -174,6 +270,8 @@
     }
 }, {
     "name": "Kezlya Denis",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -181,6 +279,8 @@
     }
 }, {
     "name": "Mazepa Dmitry",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -188,6 +288,8 @@
     }
 }, {
     "name": "Plevako Dima",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -195,6 +297,8 @@
     }
 }, {
     "name": "Mishchenko Alexey",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -202,6 +306,8 @@
     }
 }, {
     "name": "Protsko Yaroslav",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -209,6 +315,8 @@
     }
 }, {
     "name": "Artem Syguta",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -216,6 +324,8 @@
     }
 }, {
     "name": "Sirik Andrew",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -223,6 +333,8 @@
     }
 }, {
     "name": "Scherba Yuriy",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -230,6 +342,8 @@
     }
 }, {
     "name": "Kletsun Yuri",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -237,6 +351,8 @@
     }
 }, {
     "name": "Anischenko Victor",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -244,6 +360,8 @@
     }
 }, {
     "name": "Kovalenko Sergei",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -251,6 +369,8 @@
     }
 }, {
     "name": "Galchenko Igor",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -258,6 +378,8 @@
     }
 }, {
     "name": "Holovan Andrii",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -265,6 +387,8 @@
     }
 }, {
     "name": "Kosenok Vladimir",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -272,6 +396,8 @@
     }
 }, {
     "name": "Savchenko Alexei",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -279,6 +405,8 @@
     }
 }, {
     "name": "Areshenko Andrew",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -286,6 +414,8 @@
     }
 }, {
     "name": "Dubyna Vladymyr",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -293,6 +423,8 @@
     }
 }, {
     "name": "Pomelov Alex",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -300,6 +432,8 @@
     }
 }, {
     "name": "Ponomarenko Valentin",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -307,6 +441,8 @@
     }
 }, {
     "name": "Korneychik Vitaliy",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -314,6 +450,8 @@
     }
 }, {
     "name": "Bozhok Taras",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -321,6 +459,8 @@
     }
 }, {
     "name": "Kosten Evgeniy",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -328,6 +468,8 @@
     }
 }, {
     "name": "Kharchenko Ivan",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -335,6 +477,8 @@
     }
 }, {
     "name": "Yarosh Vadim",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -342,6 +486,8 @@
     }
 }, {
     "name": "Kononenko Oleksii",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -349,6 +495,8 @@
     }
 }, {
     "name": "Evgeniy Yakush",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -356,6 +504,8 @@
     }
 }, {
     "name": "Nekohda Vasyl",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -363,6 +513,8 @@
     }
 }, {
     "name": "Stetsenko Sergei",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -370,6 +522,8 @@
     }
 }, {
     "name": "Kozachenko Alexander",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -377,6 +531,8 @@
     }
 }, {
     "name": "Timocshuk Dmitriy",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -384,6 +540,8 @@
     }
 }, {
     "name": "Malko Denis",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -391,6 +549,8 @@
     }
 }, {
     "name": "Golub Oleksii",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -398,6 +558,8 @@
     }
 }, {
     "name": "Rubets Sergey",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -405,6 +567,8 @@
     }
 }, {
     "name": "Stepanenko Vitaliy",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -412,6 +576,8 @@
     }
 }, {
     "name": "Lyshafay Vladislav",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -419,6 +585,8 @@
     }
 }, {
     "name": "Beidel Sergei",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -426,6 +594,8 @@
     }
 }, {
     "name": "Timko Vladislav",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -433,6 +603,8 @@
     }
 }, {
     "name": "Simonchuk Andrew",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -440,6 +612,8 @@
     }
 }, {
     "name": "Shelepen Viktor",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -447,6 +621,8 @@
     }
 }, {
     "name": "Kluchnikov Stanislav",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",
@@ -454,6 +630,8 @@
     }
 }, {
     "name": "Nazarenko Alex",
+    "status": "active",
+    "avatar": "assets/placeholder.png",
     "schedules": [],
     "workSchedule": {
         "name": "Day schedule",

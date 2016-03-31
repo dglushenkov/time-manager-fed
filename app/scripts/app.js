@@ -10,8 +10,8 @@ angular.module('scheduler', ['shdGridModule'])
         })
 
         $scope.dates = {
-            from: new Date(2016, 2, 30),
-            to: new Date(2016, 2, 31)
+            from: new Date(2016, 2, 31),
+            to: new Date(2016, 2, 32)
         };
 
 }]);

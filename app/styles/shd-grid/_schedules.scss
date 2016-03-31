@@ -1,12 +1,12 @@
-.sd-grid-ranges-wrapper {
+.shd-grid-ranges-wrapper {
     position: relative;
 }
 
-.sd-grid-entity {
+.shd-grid-entity {
     box-sizing: border-box;
 }
 
-.sd-grid-schedules {
+.shd-grid-schedules {
     overflow: hidden;
     height: 0;
 
@@ -26,7 +26,7 @@
 
 }
 
-.sd-grid-schedule {
+.shd-grid-schedule {
     position: relative;
     height: $shd-schedule-height;
     border-bottom: 1px solid $shd-grid-border-color;
@@ -36,7 +36,7 @@
     }
 
     &.dayschedule {
-        .sd-grid-range {
+        .shd-grid-range {
             background: rgba($shd-range-dayschedule-bg, $shd-range-opacity);
             border-color: $shd-range-dayschedule-bg;
             height: $shd-dayschedule-range-height;
@@ -47,7 +47,7 @@
     }
 }
 
-.sd-grid-range {
+.shd-grid-range {
     position: absolute;
     top: $shd-schedule-margin;
     background: rgba($shd-range-default-bg, $shd-range-opacity);

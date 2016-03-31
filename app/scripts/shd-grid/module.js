@@ -1,7 +1,7 @@
 angular.module('shdGridModule', ['ui.bootstrap', 'ngAnimate'])
 
 // Constants
-.constant('shdGridConstants', {
+.constant('shdGridConst', {
     CELL_WIDTH: 70, // Grid cell min width
     ZOOM_SCALE: [0.25, 0.5, 1, 2], // Hours per cell values for zoom steps
 

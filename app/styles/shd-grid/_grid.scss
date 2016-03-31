@@ -1,4 +1,4 @@
-.sd-grid {
+.shd-grid {
     @extend .clearfix;
     overflow: hidden;
 
@@ -6,14 +6,15 @@
     font-family: 'Roboto', sans-serif;
 }
 
-.sd-grid-body {
+.shd-grid-body {
     float: left;
     width: calc(100% - #{$shd-axis-y-width});
     overflow-y: scroll;
     overflow-x: scroll;
     position: relative;
+    
+    .shd_ranges-wrapper {
+        cursor: all-scroll;
+    }
 }
 
-.sd-grid-ranges-wrapper {
-    cursor: all-scroll;
-}

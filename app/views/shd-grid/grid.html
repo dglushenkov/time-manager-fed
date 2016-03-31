@@ -1,57 +1,57 @@
-<div class="sd-grid">
-    <div class="sd-grid-controls">
-        <div class="sd-grid-name-filter">
+<div class="shd-grid">
+    <div class="shd-grid-controls">
+        <div class="shd-grid-name-filter">
             <input type="text" ng-model="name" ng-model-options="{ debounce: 400 }">
         </div>
-        <div class="sd-grid-caption">
-            <div class="sd-grid-zoom-controls">
+        <div class="shd-grid-caption">
+            <div class="shd-grid-zoom-controls">
                 <button ng-click="setZoom(-1)">Zoom +</button>
                 <button ng-click="setZoom(1)">Zoom -</button>
             </div>
-            <div class="sd-grid-caption-date" ng-click="datepicker.open()">{{date}}</div>
+            <div class="shd-grid-caption-date" ng-click="datepicker.open()">{{date}}</div>
             <input type="text" class="form-control" style="visibility: hidden;"
                 uib-datepicker-popup="dd-MMMM-yyyy"
                 ng-model="date"
                 is-open="datepicker.isOpen"/>
-            <div class="sd-grid-nav-controls">
+            <div class="shd-grid-nav-controls">
                 <button>Today</button>
                 <button>Prev</button>
                 <button>Next</button>
             </div>
         </div>
     </div>
-    <div class="sd-grid-x-axis-wrapper">
-        <div class="sd-grid-scroll-placeholder-horz"></div>
-        <div class="sd-grid-y-label" ng-click="toggleSort()">
+    <div class="shd-grid-x-axis-wrapper">
+        <div class="shd-grid-scroll-placeholder-horz"></div>
+        <div class="shd-grid-y-label" ng-click="toggleSort()">
             <span class="glyphicon {{sortReverse ? 'glyphicon-triangle-top' : 'glyphicon-triangle-bottom'}}">
             </span>
             Name 
         </div>
-        <div class="sd-grid-x-axis">
-            <div class="axis-day"></div>
-            <div class="axis-time"></div>
+        <div class="shd-grid-x-axis">
+            <div class="shd_axis-day"></div>
+            <div class="shd_axis-time"></div>
         </div>
     </div>
 
-    <div class="sd-grid-y-axis">
-        <sd-grid-entity-person 
+    <div class="shd-grid-y-axis">
+        <shd-grid-entity-person 
             ng-repeat="entity in data | filter:name | orderBy:'name':sortReverse" 
             entity="entity">
-        </sd-grid-entity-person>
+        </shd-grid-entity-person>
        
-        <div class="sd-grid-scroll-placeholder-vert"></div>
+        <div class="shd-grid-scroll-placeholder-vert"></div>
     </div>
 
-    <div class="sd-grid-body">
-        <div class="sd-grid-ranges-wrapper">
-            <div class="sd-grid-ruler"></div>
+    <div class="shd-grid-body">
+        <div class="shd_ranges-wrapper">
+            <div class="shd-grid-ruler"></div>
 
-            <sd-grid-entity-schedules 
+            <shd-grid-entity-schedules 
                 ng-repeat="entity in data | filter:name | orderBy:'name':sortReverse" 
                 entity="entity" dates="dates">
-            </sd-grid-entity-schedules>
+            </shd-grid-entity-schedules>
             
-            <div class="sd-grid-now-marker"></div>
+            <div class="shd-grid-now-marker"></div>
         </div>
     </div>
 </div>

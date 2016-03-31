@@ -19,7 +19,9 @@ angular.module('shdGridModule')
     //=============================================================================================================
     // Parse range dates string to range dates objects
     // 
-    // Range dates string must be in format '[<date>|<expression>]/<time>/<duration>'
+    // Range dates string must be in format 
+    //      '[<date>|<expression>]/<time>/<duration>'
+    //      
     //      <date> - date string in format ISO 8601 'YYYY-MM-DD'
     //
     //      <expression> - expression to check in format '(<condition>[;<condition>])'
@@ -35,8 +37,10 @@ angular.module('shdGridModule')
     //                  'dw' - day in week
     //                  'dy' - day in year
     //              <operator> - one of the following:
-    //                  '=' - equal or one of <compare_with> items if <compare_with> is a comma separated list e.g. 1,2,4,6
-    //                  '!=' - not equal or not one of <compare_with> items if <compare_with> is a comma separated list e.g. 1,2,4,6
+    //                  '=' - equal or one of <compare_with> items 
+    //                      if <compare_with> is a comma separated list e.g. 1,2,4,6
+    //                  '!=' - not equal or not one of <compare_with> items 
+    //                      if <compare_with> is a comma separated list e.g. 1,2,4,6
     //                  '>' - greater than
     //                  '<' - less than
     //                  '>=' - greater than or equal
@@ -53,19 +57,18 @@ angular.module('shdGridModule')
     //      
     //      <duration> - duration string in format '<duration_expr>|<minutes_amount>'
     //          <minutes_amount> - number of minutes
-    //          <duration_expr> - duration expression string in format '<days_amount>d||<hours_amount>h||<minutes_amount>m'
+    //          <duration_expr> - duration expression string 
+    //              in format '<days_amount>d||<hours_amount>h||<minutes_amount>m'
     //=============================================================================================================
     function parseRangeDatesStr(rangeStr, gridDates) {
-        // Not a string
-        if (typeof(rangeStr) != 'string') return;
-
+        console.log('123');
         var rangeExprParts = rangeStr.split('/');
         // Invalid format
         if (rangeExprParts.length != 3) return;
 
-        var date = rangeExprParts[0].trim();
+        var date = rangeExprParts[0].trim().toLowerCase();
         var time = rangeExprParts[1].trim();
-        var duration = parseDurationStr(rangeExprParts[2].trim());
+        var duration = parseDurationStr(rangeExprParts[2].trim().toLowerCase());
         // Date, time or duration is empty
         if (!date || !time || !duration) return;
         var ranges = [];
@@ -73,7 +76,7 @@ angular.module('shdGridModule')
 
         // First part is not expression
         if (date.charAt(0) != '(') {
-            var startDate = new Date(date + time);
+            var startDate = new Date(date + 'T' + time);
             // Invalid date or time
             if (isNaN(startDate.getTime())) return;
 
@@ -84,219 +87,52 @@ angular.module('shdGridModule')
                 duration: duration,
             };
             range.to = (range.actualTo > gridDates.to) ? new Date(gridDates.to.getTime()) : range.actualTo;
+            console.log(range);
             ranges.push(range);
 
 
         // First part is an expression
         } else {
-            var conditions = parseRangeConditions(date);
+            var conditions = parseRangeConditions(date.slice(1, -1));
             // Invalid conditions
-            if (!condition) return;
-        }
+            if (!conditions) return;
 
+            var d = new Date(gridDates.from.getTime());
+            outer: while (d <= gridDates.to) {
+                for (var key in conditionKeys) {
+                    if (key in conditions) {
+                        var func = compareFuncs[conditions[key].operator];
+                        if (!func) return;
 
-        if (rangeExprParts.length == 2) {
-            var range = {};
-            range.from = new Date(rangeExprParts[0]);
-            range.to = new Date(range.from.getTime());
-            var durationHhmm = rangeExprParts[1].split(':');
-            range.to.setHours(range.from.getHours() + +durationHhmm[0], range.from.getMinutes() + +durationHhmm[1]);
-
-            // Check if end time fits grid date span
-            if (range.to > gridDates.to) {
-                range.to = new Date(gridDates.to.getTime());
-            }
-
-            if (range.from >= gridDates.from) {
-                ranges.push(getRangeItemSize(range, gridDates));
-            }
-
-
-        // Periodical expression
-        // E.g. 'y = 2016&dw in 1,2,3,4,5-11:00-05:30'
-        // Every Mn Ts Wd Th Fr in 2016 from 11:00 and duration 05:30
-        } else {
-            var conditions = {};
-            var startHhmm = rangeExprParts[1].split(':');
-            var durationHhmm = rangeExprParts[2].split(':');
-
-            // If there are conditions
-            if (rangeExprParts[0]) {
-
-                // Split conditions by '&' symbol
-                var conditionsParts = rangeExprParts[0].split('&');
-
-                // For each condition get condition parts:
-                // - identifier
-                // - operator
-                // - value
-                for (var i = 0; i < conditionsParts.length; i++) {
-                    conditionItemParts = conditionsParts[i].split(' ');
-                    conditions[conditionItemParts[0]] = {
-                        operator: conditionItemParts[1],
-                        value: conditionItemParts[2]
+                        checkCondition = func(conditionKeys[key].getValue(d), conditions[key].compareWith);
+                        if (!checkCondition) {
+                            conditionKeys[key].increment(d);
+                            continue outer;
+                        }
                     }
                 }
-            }
 
-            // Get all ranges fitting conditions and grid datetime interval 
-            var rangeStart = getNextStart(conditions, gridDates.from, gridDates.to);
-            while (rangeStart) {
+                var startDate = new Date(d.toISOString().slice(0, 11) + time);
+                if (isNaN(startDate.getTime())) return;
 
-                var range = {};
-                range.from = new Date(rangeStart.getTime())
-                range.from.setHours(+startHhmm[0], +startHhmm[1]);
+                var endDate = new Date(startDate.getTime() + duration);
+                var range = {
+                    from: startDate,
+                    actualTo: endDate,
+                    duration: duration,
+                };
+                range.to = (range.actualTo > gridDates.to) ? new Date(gridDates.to.getTime()) : range.actualTo;
+                ranges.push(range);
 
-                if (range.from >= gridDates.from) {
-                    range.to = new Date(range.from.getTime());
-                    range.to.setHours(range.to.getHours() + +durationHhmm[0], range.to.getMinutes() + +durationHhmm[1]);
-
-                    if (range.to > gridDates.to) {
-                        range.to = new Date(gridDates.to.getTime());
-                    }
-
-                    ranges.push(getRangeItemSize(range, gridDates));
-                    var newStart = new Date(range.to);
-
-                    if (range.from.getDate() == range.to.getDate()) {
-                        newStart.setDate(newStart.getDate() + 1);
-                    }
-
-                    newStart.setMinutes(newStart.getMinutes() + 1);
+                d = new Date(range.actualTo.getTime());
+                d.setMinutes(d.getMinutes() + 1);
+                if (range.from.getDate() == range.actualTo.getDate()) {
+                    d.setDate(d.getDate() + 1);
                 }
-
-                rangeStart = getNextStart(conditions, newStart, gridDates.to);
             }
         }
 
         return ranges;
-
-        // Returns next period start time fitting conditions and interval
-        function getNextStart(conditions, from, to) {
-            var date = new Date(from.getTime());
-
-            while(date < to) {
-                // Check year
-                if (conditions.y) {
-                    if (!checkCondition(date.getFullYear(), conditions.y.operator, conditions.y.value)) {
-                        date.setFullYear(date.getFullYear() + 1, 0);
-                        continue;
-                    }
-                }
-
-                // Check month
-                if (conditions.m) {
-                    if (!checkCondition(date.getMonth(), conditions.m.operator, conditions.m.value)) {
-                        date.setMonth(date.getMonth() + 1, 1);
-                        continue;
-                    }
-                }
-
-                // Check week number in year
-                if (conditions.w) {
-                    if (!checkCondition(getWeek(date), conditions.w.operator, conditions.w.value)) {
-                        date.setDate(date.getDate() + 7 - date.getDay());
-                        continue;
-                    }
-                }
-
-                // Check week number in month
-                if (conditions.wm) {
-                    if (!checkCondition(getWeek(date, true), conditions.wm.operator, conditions.wm.value)) {
-                        date.setDate(date.getDate() + 7 - date.getDay());
-                        continue;
-                    }
-                }
-
-                // Check day in year
-                if (conditions.dy){
-                    if (!checkCondition(getDateInYear(date), conditions.dy.operator, conditions.dy.value)) {
-                        date.setDate(date.getDate() + 1);
-                        continue;
-                    }
-                }
-
-                // Check day in week
-                if (conditions.dw){
-                    if (!checkCondition(date.getDay(), conditions.dw.operator, conditions.dw.value)) {
-                        date.setDate(date.getDate() + 1);
-                        continue;
-                    }
-                }
-
-                // Check date
-                if (conditions.d){
-                    if (!checkCondition(date.getDate(), conditions.d.operator, conditions.d.value)) {
-                        date.setDate(date.getDate() + 1);
-                        continue;
-                    }
-                }
-
-                return date;
-            }
-        }
-
-        // Get week number in month or in year
-        function getWeek(date, inMonth) {
-            var firstWeek = new Date(date.getFullYear(), 0, 1);
-            if (inMonth) {
-                firstWeek.setMonth(date.getMonth());
-            }
-            firstWeek.setDate(-firstWeek.getDay());
-            return Math.floor((date - firstWeek) / shdGridConst.WEEK_MILISEC) + 1;
-        }
-
-        // Get day number in year
-        function getDateInYear(date) {
-            var yearStart = new Date(date.getFullYear(), 0, 1);
-            return Math.floor((date - yearStart) / shdGridConst.DAY_MILISEC) + 1;
-        }
-
-        // Check condition
-        function checkCondition(value, operator, compareWith) {
-            var result;
-
-            switch(operator) {
-                case '=':
-                    result = value == +compareWith;
-                    break;
-                case '<':
-                    result = value < +compareWith;
-                    break;
-                case '>':
-                    result = value > +compareWith;
-                    break;
-                case '<=':
-                    result = value <= +compareWith;
-                    break;
-                case '>=':
-                    result = value >= +compareWith;
-                    break;
-                case '!=':
-                    result = value != +compareWith;
-                    break;
-                case '/':
-                    result = (value % compareWith) == 0;
-                    break;
-                case '!/':
-                    result = (value % compareWith) != 0;
-                    break;
-                case '=/':
-                    var compareParts = compareWith.split(',');
-                    result = (value % compareParts[0]) == compareParts[1];
-                    break;
-                case 'in':
-                    var compareList = compareWith.split(',');
-                    result = compareList.indexOf(value + '') != -1;
-                    break;
-                case '!in':
-                    var compareList = compareWith.split(',');
-                    result = compareList.indexOf(value + '') == -1;
-                    break;
-            }
-
-            return result;
-        }
     }
 
     // Duration string multipliers
@@ -325,8 +161,8 @@ angular.module('shdGridModule')
             var multiplierPos = durationStr.indexOf(durationMultipliers[mltCounter].char, pos);
 
             // If multiplier is found
-            if (~multiplierPos) {
-                mltStr = durationStr.slice(pos, multiplierPos);
+            if (multiplierPos != -1) {
+                mltStr = durationStr.slice(pos, multiplierPos).trim();
                 // Multiplier has no value before
                 if (!mltStr) return;
                 durationMs += durationMultipliers[mltCounter].value * mltStr;
@@ -349,50 +185,45 @@ angular.module('shdGridModule')
 
     var compareFuncs = {
         '=': function(value, compare) {
-
+            var compareList = compare.split(',');
+            return compareList.indexOf(value + '') != -1;
         },
         '!=': function(value, compare) {
-
+            var compareList = compare.split(',');
+            return compareList.indexOf(value + '') == -1;
         },
         '>': function(value, compare) {
-
+            return value > compare;
         },
         '<': function(value, compare) {
-
+            return value < compare;
         },
         '>=': function(value, compare) {
-
+            return value >= compare;
         },
         '<=': function(value, compare) {
-
+            return value <= compare;
         },
         '/': function(value, compare) {
-
+            return value % compare == 0;
         },
         '!/': function(value, compare) {
-
+            return value % compare != 0;
         },
         '/=': function(value, compare) {
-
+            var compareParts = compare.split(',');
+            return (compareParts == 2) && (value % compareParts[0] == compareParts[1]);
         }
     };
 
-    var conditionOptions = {
+    var conditionKeys = {
         'y': {
-                getValue: function(date) {
-                    return date.getFullYear();
-                },
-                add: function(date) {
-
-                }
+                getValue: function(date) { return date.getFullYear(); },
+                increment: function(date) { return date.setFullYear(date.getFullYear() + 1, 0, 1); }
             },
         'm': {
-                getValue: function(date) {
-                    return date.getMonth();
-                },
-                add: function(date) {
-
-                }
+                getValue: function(date) { return date.getMonth(); },
+                increment: function(date) { return date.setMonth(date.getMonth() + 1, 1); }
             },
         'w': {
                 getValue: function(date) {
@@ -400,9 +231,7 @@ angular.module('shdGridModule')
                     firstWeek.setDate(-firstWeek.getDay());
                     return Math.floor((date - firstWeek) / shdGridConst.W_MS) + 1;
                 },
-                add: function(date) {
-
-                }
+                increment: function(date) { return date.setDate(date.getDate() + 7 - date.getDay()); }
             },
         'wm': {
                 getValue: function(date) {
@@ -410,40 +239,51 @@ angular.module('shdGridModule')
                     firstWeek.setDate(-firstWeek.getDay());
                     return Math.floor((date - firstWeek) / shdGridConst.W_MS) + 1;
                 },
-                add: function(date) {
-
-                }
+                increment: function(date) { return date.setDate(date.getDate() + 7 - date.getDay()); }
             },
         'dw': {
-                getValue: function(date) {
-                    return date.getDay();
-                },
-                add: function(date) {
-
-                }
+                getValue: function(date) { return date.getDay(); },
+                increment: function(date) { return date.setDate(date.getDate() + 1); }
             },
         'dm': {
-                getValue: function(date) {
-                    return date.getDate();
-                },
-                add: function(date) {
-
-                }
+                getValue: function(date) { return date.getDate(); },
+                increment: function(date) { return date.setDate(date.getDate() + 1); }
             },
         'd': {
                 getValue: function(date) {
                     var yearStart = new Date(date.getFullYear());
                     return Math.floor((date - yearStart) / shdGridConst.D_MS) + 1;
                 },
-                add: function(date) {
-
-                }
+                increment: function(date) { return date.setDate(date.getDate() + 1); }
             }
     };
 
-    function parseRangeConditions(str) {
+    var conditionRegex = /(\w{1,2})(\D{1,2})(\d.*)$/;
 
+    function parseRangeConditions(str) {
+        var conditionsItems = str.split(';');
+        var conditionsObj = {};
+
+        for (var i = 0; i < conditionsItems.length; i++) {
+            condition = conditionsItems[i].trim();
+            condition = conditionRegex.exec(condition);
+
+            if (!condition[1] || !condition[2] || !condition[3]) return;
+
+            conditionsObj[condition[1]] = {
+                operator: condition[2],
+                compareWith: condition[3]
+            };
+        }
+
+        return conditionsObj;
     }
+
+
+    //=============================================================================================================
+    // Grid drag'n'scroll object
+    //=============================================================================================================
+    var gridDragScroll = {};
 
     // Grid drag'n'scroll
     function onGridMouseDown(e) {
@@ -488,13 +328,10 @@ angular.module('shdGridModule')
         e.preventDefault();
     }
 
-    // Grid drag'n'scroll object
-    var gridDragScroll = {};
-
     return {
-        timeToHhmm: timeToHhmm,
+        dateToHhmm: dateToHhmm,
         getRangeItemSize: getRangeItemSize,
-        parseRangeDatesExpr: parseRangeDatesExpr,
+        parseRangeDatesStr: parseRangeDatesStr,
         onGridMouseDown: onGridMouseDown
     }
 }]);
