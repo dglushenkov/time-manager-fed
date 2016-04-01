@@ -5,7 +5,7 @@ angular.module('scheduler', ['shdGridModule'])
     function($scope, $http) {
         $scope.zoom = 4;
 
-        $http.get('api/entities3.json').then(function(response) {
+        $http.get('api/entities4.json').then(function(response) {
             $scope.sampleData = response.data;
         });
 

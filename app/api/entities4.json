@@ -2,7 +2,7 @@
 {
     "name": "Nazarov Victor",
     "status": "active",
-    "timezone": -240,
+    "timezone": -180,
     "avatar": "assets/img/placeholder.png",
     "schedules": [],
     "workSchedule": {

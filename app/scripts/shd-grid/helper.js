@@ -61,7 +61,9 @@ angular.module('shdGridModule')
     //              in format '<days_amount>d||<hours_amount>h||<minutes_amount>m'
     //=============================================================================================================
     function parseRangeDatesStr(rangeStr, gridDates, timezone) {
-        timezone = timezone || -180;
+        if (timezone == undefined) {
+            timezone = -180;
+        }
         var rangeExprParts = rangeStr.split('/');
         // If invalid format
         if (rangeExprParts.length != 3) return;
@@ -250,12 +252,22 @@ angular.module('shdGridModule')
 
     var conditionKeys = {
         'y': {
-                getValue: function(date) { return date.getFullYear(); },
-                increment: function(date) { return date.setFullYear(date.getFullYear() + 1, 0, 1); }
+                getValue: function(date) { 
+                    return date.getFullYear(); 
+                },
+                increment: function(date) { 
+                    date.setHours(0, 0, 0, 0);
+                    return date.setFullYear(date.getFullYear() + 1, 0, 1); 
+                }
             },
         'm': {
-                getValue: function(date) { return date.getMonth(); },
-                increment: function(date) { return date.setMonth(date.getMonth() + 1, 1); }
+                getValue: function(date) {
+                    return date.getMonth(); 
+                },
+                increment: function(date) {
+                    date.setHours(0, 0, 0, 0);
+                    return date.setMonth(date.getMonth() + 1, 1); 
+                }
             },
         'w': {
                 getValue: function(date) {
@@ -263,7 +275,10 @@ angular.module('shdGridModule')
                     firstWeek.setDate(-firstWeek.getDay());
                     return Math.floor((date - firstWeek) / shdGridConst.W_MS) + 1;
                 },
-                increment: function(date) { return date.setDate(date.getDate() + 7 - date.getDay()); }
+                increment: function(date) {
+                    date.setHours(0, 0, 0, 0);
+                    return date.setDate(date.getDate() + 7 - date.getDay()); 
+                }
             },
         'wm': {
                 getValue: function(date) {
@@ -271,22 +286,38 @@ angular.module('shdGridModule')
                     firstWeek.setDate(-firstWeek.getDay());
                     return Math.floor((date - firstWeek) / shdGridConst.W_MS) + 1;
                 },
-                increment: function(date) { return date.setDate(date.getDate() + 7 - date.getDay()); }
+                increment: function(date) { 
+                    date.setHours(0, 0, 0, 0);
+                    return date.setDate(date.getDate() + 7 - date.getDay()); 
+                }
             },
         'dw': {
-                getValue: function(date) { return date.getDay(); },
-                increment: function(date) { return date.setDate(date.getDate() + 1); }
+                getValue: function(date) { 
+                    return date.getDay(); 
+                },
+                increment: function(date) { 
+                    date.setHours(0, 0, 0, 0);
+                    return date.setDate(date.getDate() + 1); 
+                }
             },
         'd': {
-                getValue: function(date) { return date.getDate(); },
-                increment: function(date) { return date.setDate(date.getDate() + 1); }
+                getValue: function(date) { 
+                    return date.getDate(); 
+                },
+                increment: function(date) { 
+                    date.setHours(0, 0, 0, 0);
+                    return date.setDate(date.getDate() + 1); 
+                }
             },
         'dy': {
                 getValue: function(date) {
                     var yearStart = new Date(date.getFullYear());
                     return Math.floor((date - yearStart) / shdGridConst.D_MS) + 1;
                 },
-                increment: function(date) { return date.setDate(date.getDate() + 1); }
+                increment: function(date) { 
+                    date.setHours(0, 0, 0, 0);
+                    return date.setDate(date.getDate() + 1); 
+                }
             }
     };
 
