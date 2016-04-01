@@ -34,10 +34,10 @@
     </div>
 
     <div class="shd-grid-y-axis">
-        <shd-grid-entity-person 
+        <shd-nav-entity 
             ng-repeat="entity in data | filter:name | orderBy:'name':sortReverse" 
             entity="entity">
-        </shd-grid-entity-person>
+        </shd-nav-entity>
        
         <div class="shd-grid-scroll-placeholder-vert"></div>
     </div>
@@ -46,10 +46,10 @@
         <div class="shd_ranges-wrapper">
             <div class="shd-grid-ruler"></div>
 
-            <shd-grid-entity-schedules 
+            <shd-grid-entity
                 ng-repeat="entity in data | filter:name | orderBy:'name':sortReverse" 
                 entity="entity" dates="dates">
-            </shd-grid-entity-schedules>
+            </shd-grid-entity>
             
             <div class="shd-grid-now-marker"></div>
         </div>

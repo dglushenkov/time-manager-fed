@@ -39,13 +39,12 @@ angular.module('shdGridModule')
             // ====================================================================================
 
             // Internal grid variables container
-            gridOptions = {};
+            var gridOptions = {};
             scope.sortReverse = false;
             scope.datepicker = {
                 isOpen: false,
                 open: function() {
                     scope.datepicker.isOpen = true;
-                    console.log('123');
                 }
             }
             scope.date = new Date();
@@ -63,22 +62,23 @@ angular.module('shdGridModule')
             // ====================================================================================
             // Watchers
             // ====================================================================================
-            scope.$watch('hoursPerCell', function(value) {
+            scope.$watch('zoom', function(newValue, oldValue) {
+                var newZoom = newValue;
+                newZoom = Math.min(shdGridConst.ZOOM_SCALE.length - 1, newZoom);
+                newZoom = Math.max(0, newZoom);
+                scope.zoom = newZoom;
+
+                if (newZoom == oldValue) return;
+
+                scope.hoursPerCell = shdGridConst.ZOOM_SCALE[newZoom];
+
                 var gridHorzScrollFactor = gridAreas.body.scrollLeft() / gridAreas.body.get(0).scrollWidth;
 
-                gridOptions.cellCount = (scope.dates.to - scope.dates.from) / shdGridConst.H_MS / value;
+                gridOptions.cellCount = (scope.dates.to - scope.dates.from) / shdGridConst.H_MS / scope.hoursPerCell;
                 gridOptions.isScrollable = needScroll();
 
                 drawRulers();
                 gridAreas.body.scrollLeft(gridHorzScrollFactor * gridAreas.body.get(0).scrollWidth);
-            });
-
-            scope.$watch('zoom', function(value) {
-                var newZoom = value;
-                newZoom = Math.min(shdGridConst.ZOOM_SCALE.length - 1, newZoom);
-                newZoom = Math.max(0, newZoom);
-                scope.zoom = newZoom;
-                scope.hoursPerCell = shdGridConst.ZOOM_SCALE[newZoom];
             })
 
 
@@ -138,7 +138,6 @@ angular.module('shdGridModule')
                 var xAxisTimeHtml = '';
                 var rulerHtml = '';
                 var timeInterval = (scope.dates.to - scope.dates.from) / gridOptions.cellCount;
-
                 var timeCounter = new Date(scope.dates.from.getTime());
                 for (var i = 0; i < gridOptions.cellCount; i++) {
                     xAxisTimeHtml += shdGridConst.X_AXIS_TIME_TPL

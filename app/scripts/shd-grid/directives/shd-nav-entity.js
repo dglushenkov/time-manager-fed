@@ -1,12 +1,12 @@
 angular.module('shdGridModule')
 
-.directive('shdGridEntityPerson', [
+.directive('shdNavEntity', [
     'shdGridHelper', 'shdGridConst',
     function(shdGridHelper, shdGridConst) {
 
         return {
             restrict: 'AE',
-            templateUrl: 'views/shd-grid/entity-person.html',
+            templateUrl: 'views/shd-grid/nav-entity.html',
             replace: true,
             scope: {
                 entity: '='

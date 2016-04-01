@@ -1,0 +1,13 @@
+[
+{
+    "name": "Nazarov Victor",
+    "status": "active",
+    "timezone": -240,
+    "avatar": "assets/img/placeholder.png",
+    "schedules": [],
+    "workSchedule": {
+        "name": "Day schedule",
+        "ranges": ["()/22:00/4h"]
+    }
+}
+]

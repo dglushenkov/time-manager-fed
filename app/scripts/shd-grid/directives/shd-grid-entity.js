@@ -1,12 +1,12 @@
 angular.module('shdGridModule')
 
-.directive('shdGridEntitySchedules', [
+.directive('shdGridEntity', [
     'shdGridHelper', 'shdGridConst',
     function(shdGridHelper, shdGridConst) {
 
         return {
             restrict: 'AE',
-            templateUrl: 'views/shd-grid/entity-schedules.html',
+            templateUrl: 'views/shd-grid/grid-entity.html',
             replace: true,
             scope: {
                 entity: '=',

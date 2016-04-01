@@ -20,7 +20,7 @@ angular.module('shdGridModule')
     // Parse range dates string to range dates objects
     // 
     // Range dates string must be in format 
-    //      '[<date>|<expression>]/<time>/<duration>'
+    //      '[<date>|<expression>]|<time>|<duration>'
     //      
     //      <date> - date string in format ISO 8601 'YYYY-MM-DD'
     //
@@ -45,9 +45,9 @@ angular.module('shdGridModule')
     //                  '<' - less than
     //                  '>=' - greater than or equal
     //                  '<=' - less than or equal
-    //                  '/' - <value_to_compare> mod <compare_with> == 0
-    //                  '!/' - <value_to_compare> mod <compare_with> != 0
-    //                  '/=' - <value_to_compare> mod <compare_with>[0] == <compare_with>[1] 
+    //                  '%' - <value_to_compare> mod <compare_with> == 0
+    //                  '!%' - <value_to_compare> mod <compare_with> != 0
+    //                  '%=' - <value_to_compare> mod <compare_with>[0] == <compare_with>[1] 
     //                      <compare_with> must be a comma separated list with two values e.g. 1,2
     //                      
     //              <compare_with> - number or comma separated list of numbers
@@ -60,129 +60,161 @@ angular.module('shdGridModule')
     //          <duration_expr> - duration expression string 
     //              in format '<days_amount>d||<hours_amount>h||<minutes_amount>m'
     //=============================================================================================================
-    function parseRangeDatesStr(rangeStr, gridDates) {
-        console.log('123');
+    function parseRangeDatesStr(rangeStr, gridDates, timezone) {
+        timezone = timezone || -180;
         var rangeExprParts = rangeStr.split('/');
-        // Invalid format
+        // If invalid format
         if (rangeExprParts.length != 3) return;
 
         var date = rangeExprParts[0].trim().toLowerCase();
         var time = rangeExprParts[1].trim();
+        time = parseTimeStr(time);
         var duration = parseDurationStr(rangeExprParts[2].trim().toLowerCase());
-        // Date, time or duration is empty
-        if (!date || !time || !duration) return;
+        // Date, time or duration is invalid
+        if (!date || isNaN(time.hours) || isNaN(time.minutes) || !duration) return;
+
+        // Timezone difference = local time - user time
+        var localDiffUserMinutes = (timezone - shdGridConst.LOCAL_TIMEZONE) * shdGridConst.M_MS;
+        var gridDatesUser = {
+            from: new Date(gridDates.from.getTime() - localDiffUserMinutes),
+            to: new Date(gridDates.to.getTime() - localDiffUserMinutes)
+        };
+
         var ranges = [];
+        var gridDatesUserDiff = gridDatesUser.to - gridDatesUser.from;
 
-
-        // First part is not expression
+        // First part is a date
         if (date.charAt(0) != '(') {
-            var startDate = new Date(date + 'T' + time);
-            // Invalid date or time
+            var startDate = new Date(date); // User date in GMT
+            // Invalid date
             if (isNaN(startDate.getTime())) return;
 
+            var GMTMs = startDate.getTime();
+            var localMs = GMTMs - shdGridConst.LOCAL_TIMEZONE * shdGridConst.M_MS;
+            var startDateUser = new Date(localMs);
+
+            startDate.setHours(time.hours, time.minutes, 0, 0);
+
             var endDate = new Date(startDate.getTime() + duration);
+            if (endDate <= gridDatesUser.from || startDate >= gridDatesUser.to) return;
+
             var range = {
-                from: startDate,
-                actualTo: endDate,
+                realFrom: startDate,
+                realTo: endDate,
                 duration: duration,
+                timezone: timezone
             };
-            range.to = (range.actualTo > gridDates.to) ? new Date(gridDates.to.getTime()) : range.actualTo;
-            console.log(range);
+            range.from = (range.realFrom < gridDatesUser.from) ? gridDatesUser.from : range.realFrom;
+            range.to = (range.realTo > gridDatesUser.to) ? gridDatesUser.to : range.realTo;
+            range.view = {
+                left: (range.from - gridDatesUser.from) / (gridDatesUserDiff) * 100,
+                width: (range.to - range.from) / (gridDatesUserDiff) * 100
+            }
             ranges.push(range);
 
 
         // First part is an expression
         } else {
-            var conditions = parseRangeConditions(date.slice(1, -1));
-            // Invalid conditions
+            var conditions = parseRangeConditions(date.slice(1, -1).trim());
+            // If invalid conditions
             if (!conditions) return;
 
-            var d = new Date(gridDates.from.getTime());
-            outer: while (d <= gridDates.to) {
+            var d = new Date(gridDatesUser.from.getTime() - shdGridConst.D_MS);
+            outer: while (d < gridDatesUser.to) {
                 for (var key in conditionKeys) {
                     if (key in conditions) {
                         var func = compareFuncs[conditions[key].operator];
                         if (!func) return;
 
-                        checkCondition = func(conditionKeys[key].getValue(d), conditions[key].compareWith);
-                        if (!checkCondition) {
+                        if (!func(conditionKeys[key].getValue(d), conditions[key].compareWith)) {
                             conditionKeys[key].increment(d);
                             continue outer;
                         }
                     }
                 }
 
-                var startDate = new Date(d.toISOString().slice(0, 11) + time);
-                if (isNaN(startDate.getTime())) return;
-
+                var startDate = new Date(d.getTime());
+                startDate.setHours(time.hours, time.minutes, 0, 0);
                 var endDate = new Date(startDate.getTime() + duration);
+                if (endDate <= gridDatesUser.from || startDate >= gridDatesUser.to || startDate < d) {
+                    conditionKeys['d'].increment(d)
+                    continue;
+                }
+
+
                 var range = {
-                    from: startDate,
-                    actualTo: endDate,
+                    realFrom: startDate,
+                    realTo: endDate,
                     duration: duration,
+                    timezone: timezone
                 };
-                range.to = (range.actualTo > gridDates.to) ? new Date(gridDates.to.getTime()) : range.actualTo;
+                range.from = (range.realFrom < gridDatesUser.from) ? gridDatesUser.from : range.realFrom;
+                range.to = (range.realTo > gridDatesUser.to) ? gridDatesUser.to : range.realTo;
+                range.view = {
+                    left: (range.from - gridDatesUser.from) / (gridDatesUserDiff) * 100,
+                    width: (range.to - range.from) / (gridDatesUserDiff) * 100
+                }
                 ranges.push(range);
 
-                d = new Date(range.actualTo.getTime());
-                d.setMinutes(d.getMinutes() + 1);
-                if (range.from.getDate() == range.actualTo.getDate()) {
-                    d.setDate(d.getDate() + 1);
-                }
+                d = new Date(endDate.getTime() + shdGridConst.M_MS);
             }
         }
 
         return ranges;
+
     }
 
-    // Duration string multipliers
+    function toTimezoneDate(date, timezoneDiff) {
+        var d = new Date(date.getTime());
+        d.setMinutes(d.getMinutes() + timezoneDiff);
+        return d;
+    }
+
+    // Duration multipliers
     var durationMultipliers = [
-        { 
-            char: 'd',
-            value: shdGridConst.D_MS 
-        },
-        { 
-            char: 'h',
-            value: shdGridConst.H_MS 
-        },
-        { 
-            char: 'm',
-            value: shdGridConst.M_MS 
-        }
+        { char: 'd', coef: shdGridConst.D_MS }, // Days
+        { char: 'h', coef: shdGridConst.H_MS }, // Hours
+        { char: 'm', coef: shdGridConst.M_MS }  // Minutes
     ];
 
-    // Parse duration string to number of millisecond
-    function parseDurationStr(durationStr) {
-        var durationMs = 0;
-        var pos = 0;
-        var mltCounter = 0;
+    // Parse duration string to milliseconds
+    function parseDurationStr(str) {
+        var duration = 0; // Duration in milliseconds
+        var i = 0; // Current position in str string
+        var m = 0; // Current position in durationMultipliers array
 
-        while (pos < durationStr.length && mltCounter < durationMultipliers.length) {
-            var multiplierPos = durationStr.indexOf(durationMultipliers[mltCounter].char, pos);
+        // Try to find each multiplier in string
+        while (i < str.length && m < durationMultipliers.length) {
+            // Get multiplier position starting from current position
+            var mPos = str.indexOf(durationMultipliers[m].char, i);
 
             // If multiplier is found
-            if (multiplierPos != -1) {
-                mltStr = durationStr.slice(pos, multiplierPos).trim();
-                // Multiplier has no value before
-                if (!mltStr) return;
-                durationMs += durationMultipliers[mltCounter].value * mltStr;
-                // Invalid multiplier string value
-                if (isNaN(durationMs)) return;
-                pos = multiplierPos + 1;
+            if (mPos != -1) {
+                // Get multiplier value string
+                mStr = str.slice(i, mPos).trim();
+                // If multiplier has no value
+                if (!mStr) return;
+                // Add multiplier value in milliseconds to duration
+                duration += durationMultipliers[m].coef * mStr;
+                // If invalid multiplier value
+                if (isNaN(duration)) return;
+                // Move current postion behind multiplier char
+                i = mPos + 1;
             }
 
-            mltCounter++;
+            m++;
         }
 
         // If no multipliers in duration string suggest minutes amount
-        if (pos == 0) {
-            durationMs = durationStr * shdGridConst.M_MS;
-            if (isNaN(durationMs)) return;
+        if (i == 0) {
+            duration = str * shdGridConst.M_MS;
+            if (isNaN(duration)) return;
         }
 
-        return durationMs;
+        return duration;
     }
 
+    // Compare functions list
     var compareFuncs = {
         '=': function(value, compare) {
             var compareList = compare.split(',');
@@ -204,15 +236,15 @@ angular.module('shdGridModule')
         '<=': function(value, compare) {
             return value <= compare;
         },
-        '/': function(value, compare) {
+        '%': function(value, compare) {
             return value % compare == 0;
         },
-        '!/': function(value, compare) {
+        '!%': function(value, compare) {
             return value % compare != 0;
         },
-        '/=': function(value, compare) {
+        '%=': function(value, compare) {
             var compareParts = compare.split(',');
-            return (compareParts == 2) && (value % compareParts[0] == compareParts[1]);
+            return (compareParts.length == 2) && (value % compareParts[0] == compareParts[1]);
         }
     };
 
@@ -245,11 +277,11 @@ angular.module('shdGridModule')
                 getValue: function(date) { return date.getDay(); },
                 increment: function(date) { return date.setDate(date.getDate() + 1); }
             },
-        'dm': {
+        'd': {
                 getValue: function(date) { return date.getDate(); },
                 increment: function(date) { return date.setDate(date.getDate() + 1); }
             },
-        'd': {
+        'dy': {
                 getValue: function(date) {
                     var yearStart = new Date(date.getFullYear());
                     return Math.floor((date - yearStart) / shdGridConst.D_MS) + 1;
@@ -258,9 +290,20 @@ angular.module('shdGridModule')
             }
     };
 
-    var conditionRegex = /(\w{1,2})(\D{1,2})(\d.*)$/;
+    var timeRegex = /(\d{1,2})\s*:\s*(\d\d)$/;
+
+    function parseTimeStr(timeStr) {
+        var timeParts = timeRegex.exec(timeStr);
+        return {
+            hours: +timeParts[1],
+            minutes: +timeParts[2]
+        }
+    }
+
+    var conditionRegex = /(\w{1,2})\s*(\D{1,2})\s*(\d.*)$/;
 
     function parseRangeConditions(str) {
+        if (!str) return {};
         var conditionsItems = str.split(';');
         var conditionsObj = {};
 
@@ -268,11 +311,11 @@ angular.module('shdGridModule')
             condition = conditionsItems[i].trim();
             condition = conditionRegex.exec(condition);
 
-            if (!condition[1] || !condition[2] || !condition[3]) return;
+            if (!condition || !condition[1] || !condition[2] || !condition[3]) return;
 
-            conditionsObj[condition[1]] = {
-                operator: condition[2],
-                compareWith: condition[3]
+            conditionsObj[condition[1].trim()] = {
+                operator: condition[2].trim(),
+                compareWith: condition[3].trim()
             };
         }
 

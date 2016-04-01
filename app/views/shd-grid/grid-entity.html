@@ -1,10 +1,10 @@
 <div class="shd-grid-entity">
     <div class="shd-grid-schedule dayschedule">
-        <shd-range ng-repeat="range in entity.workSchedule.ranges" range-expr="range" grid-dates="dates"></shd-range>
+        <shd-range ng-repeat="range in entity.workSchedule.ranges" range-expr="range" grid-dates="dates" timezone="timezone"></shd-range>
     </div>
     <div class="shd-grid-schedules ng-hide" ng-show="entity.isExpanded" style="max-height: {{entity.schedules.length * 44}}px">
         <div class="shd-grid-schedule"  ng-repeat="schedule in entity.schedules" >
-            <shd-range ng-repeat="range in schedule.ranges" range-expr="range" grid-dates="dates"></shd-range>
+            <shd-range ng-repeat="range in schedule.ranges" range-expr="range" grid-dates="dates" timezone="timezone"></shd-range>
         </div>
     </div>
 </div>

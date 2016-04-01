@@ -14,6 +14,10 @@ angular.module('shdGridModule', ['ui.bootstrap', 'ngAnimate'])
     H_MS: 1000 * 60 * 60, // Milliseconds in hour
     D_MS: 1000 * 60 * 60 * 24, // Milliseconds in day
     W_MS: 1000 * 60 * 60 * 24 * 7, // Milliseconds in week
+    LOCAL_TIMEZONE: (function() { // GMT - local minutes
+        var now = new Date();
+        return now.getTimezoneOffset();
+    })(),
 
     // Browser calculated scrollbar width
     SCROLLBAR_WIDTH: (function() {
