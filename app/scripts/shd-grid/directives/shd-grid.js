@@ -2,8 +2,8 @@ angular.module('shdGridModule')
 
 // shd-grid directive
 .directive('shdGrid', [
-    'shdGridHelper', 'shdGridConst',
-    function(shdGridHelper, shdGridConst) {
+    'shdGridHelper', 'shdGridConst', 'shdDatetimeConst',
+    function(shdGridHelper, shdGridConst, shdDatetimeConst) {
 
     return {
         restrict: 'AE',
@@ -74,7 +74,7 @@ angular.module('shdGridModule')
 
                 var gridHorzScrollFactor = gridAreas.body.scrollLeft() / gridAreas.body.get(0).scrollWidth;
 
-                gridOptions.cellCount = (scope.dates.to - scope.dates.from) / shdGridConst.H_MS / scope.hoursPerCell;
+                gridOptions.cellCount = (scope.dates.to - scope.dates.from) / shdDatetimeConst.H_MS / scope.hoursPerCell;
                 gridOptions.isScrollable = needScroll();
 
                 drawRulers();
@@ -170,7 +170,7 @@ angular.module('shdGridModule')
             // Initialize now marker timer
             function initNowMarker() {
                 updateNowMarker();
-                return setInterval(updateNowMarker, shdGridConst.M_MS);
+                return setInterval(updateNowMarker, shdDatetimeConst.M_MS);
 
                 function updateNowMarker() {
                     var now = new Date();

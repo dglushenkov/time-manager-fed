@@ -2,9 +2,14 @@
 {
     "name": "Nazarov Victor",
     "status": "active",
-    "timezone": -180,
+    "timezone": 180,
     "avatar": "assets/img/placeholder.png",
-    "schedules": [],
+    "schedules": [
+        {
+            "name": "Ticket #1",
+            "ranges": ["2016-04-01/12:00/4h"]
+        }
+    ],
     "workSchedule": {
         "name": "Day schedule",
         "ranges": ["()/22:00/4h"]

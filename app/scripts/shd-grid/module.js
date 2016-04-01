@@ -1,4 +1,4 @@
-angular.module('shdGridModule', ['ui.bootstrap', 'ngAnimate'])
+angular.module('shdGridModule', ['ui.bootstrap', 'ngAnimate', 'shdDatetime'])
 
 // Constants
 .constant('shdGridConst', {
@@ -9,18 +9,6 @@ angular.module('shdGridModule', ['ui.bootstrap', 'ngAnimate'])
     X_AXIS_TIME_TPL: '<div class="shd_time-item">%t</div>',
     // Ruler item template
     RULER_TPL: '<div class="shd_ruler-item"></div>',
-
-    M_MS: 1000 * 60, // Milliseconds in minute
-    H_MS: 1000 * 60 * 60, // Milliseconds in hour
-    D_MS: 1000 * 60 * 60 * 24, // Milliseconds in day
-    W_MS: 1000 * 60 * 60 * 24 * 7, // Milliseconds in week
-
-    // GMT - local minutes
-    LOCAL_TIMEZONE: (function() { 
-        var now = new Date();
-        return now.getTimezoneOffset();
-    })(),
-    UA_TIMEZONE: -180, // Ukraine timezone
 
     // Browser calculated scrollbar width
     SCROLLBAR_WIDTH: (function() {
