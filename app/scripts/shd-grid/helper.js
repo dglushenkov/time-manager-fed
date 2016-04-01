@@ -8,14 +8,6 @@ angular.module('shdGridModule')
             + ('0' + date.getMinutes()).slice(-2);
     }
 
-    // Get range DOM element sizes from range and grid date intervals
-    function getRangeItemSize(rangeDates, gridDates) {
-        return {
-            width: 100 * (rangeDates.to - rangeDates.from) / (gridDates.to - gridDates.from) + '%',
-            left: 100 * (rangeDates.from - gridDates.from) / (gridDates.to - gridDates.from) + '%'
-        };
-    }
-
     //=============================================================================================================
     // Parse range dates string to range dates objects
     // 
@@ -60,69 +52,72 @@ angular.module('shdGridModule')
     //          <duration_expr> - duration expression string 
     //              in format '<days_amount>d||<hours_amount>h||<minutes_amount>m'
     //=============================================================================================================
-    function parseRangeDatesStr(rangeStr, gridDates, timezone) {
+    function parseRangeDatesStr(str, interval, timezone) {
+        // Default timezone is Ukraine
         if (timezone == undefined) {
-            timezone = -180;
+            timezone = shdGridConst.UA_TIMEZONE;
         }
-        var rangeExprParts = rangeStr.split('/');
+
+        var strParts = str.split('/');
         // If invalid format
-        if (rangeExprParts.length != 3) return;
+        if (strParts.length != 3) return;
 
-        var date = rangeExprParts[0].trim().toLowerCase();
-        var time = rangeExprParts[1].trim();
+        // Date expression
+        var dateExpr = strParts[0].trim().toLowerCase();
+        // If date expression is empty string
+        if (!dateExpr) return;
+        // Time string
+        var time = strParts[1].trim();
+        // If time is empty string
+        if (!time) return;
         time = parseTimeStr(time);
-        var duration = parseDurationStr(rangeExprParts[2].trim().toLowerCase());
-        // Date, time or duration is invalid
-        if (!date || isNaN(time.hours) || isNaN(time.minutes) || !duration) return;
+        // If time parse errors
+        if (isNaN(time.hours) || isNaN(time.minutes)) return;
+        // Duration string
+        var duration = strParts[2].trim().toLowerCase();
+        // If duration is empty string
+        if (!duration) return
+        var duration = parseDurationStr(duration);
+        // if parse duration errors
+        if (!duration) return;
 
-        // Timezone difference = local time - user time
-        var localDiffUserMinutes = (timezone - shdGridConst.LOCAL_TIMEZONE) * shdGridConst.M_MS;
-        var gridDatesUser = {
-            from: new Date(gridDates.from.getTime() - localDiffUserMinutes),
-            to: new Date(gridDates.to.getTime() - localDiffUserMinutes)
+        // Timezone difference = local date - timezone date
+        var localDiffTimezone = (timezone - shdGridConst.LOCAL_TIMEZONE) * shdGridConst.M_MS;
+        var intervalTimezone = {
+            from: new Date(interval.from.getTime() - localDiffTimezone),
+            to: new Date(interval.to.getTime() - localDiffTimezone)
         };
 
         var ranges = [];
-        var gridDatesUserDiff = gridDatesUser.to - gridDatesUser.from;
+        
 
         // First part is a date
-        if (date.charAt(0) != '(') {
-            var startDate = new Date(date); // User date in GMT
+        if (dateExpr.charAt(0) != '(') {
+            var startRange = new Date(dateExpr); // User date in GMT
             // Invalid date
-            if (isNaN(startDate.getTime())) return;
+            if (isNaN(startRange.getTime())) return;
 
-            var GMTMs = startDate.getTime();
-            var localMs = GMTMs - shdGridConst.LOCAL_TIMEZONE * shdGridConst.M_MS;
-            var startDateUser = new Date(localMs);
+            var GMTMS = startRange.getTime();
+            var localMS = GMTMS - shdGridConst.LOCAL_TIMEZONE * shdGridConst.M_MS;
+            var startRangeUser = new Date(localMS);
 
-            startDate.setHours(time.hours, time.minutes, 0, 0);
+            startRange.setHours(time.hours, time.minutes, 0, 0);
 
-            var endDate = new Date(startDate.getTime() + duration);
-            if (endDate <= gridDatesUser.from || startDate >= gridDatesUser.to) return;
+            var endRange = new Date(startRange.getTime() + duration);
+            if (endRange <= intervalTimezone.from || startRange >= intervalTimezone.to) return;
 
-            var range = {
-                realFrom: startDate,
-                realTo: endDate,
-                duration: duration,
-                timezone: timezone
-            };
-            range.from = (range.realFrom < gridDatesUser.from) ? gridDatesUser.from : range.realFrom;
-            range.to = (range.realTo > gridDatesUser.to) ? gridDatesUser.to : range.realTo;
-            range.view = {
-                left: (range.from - gridDatesUser.from) / (gridDatesUserDiff) * 100,
-                width: (range.to - range.from) / (gridDatesUserDiff) * 100
-            }
+            var range = initRangeObj(startRange, endRange, duration, timezone, intervalTimezone);
             ranges.push(range);
 
 
         // First part is an expression
         } else {
-            var conditions = parseRangeConditions(date.slice(1, -1).trim());
+            var conditions = parseRangeConditions(dateExpr.slice(1, -1).trim());
             // If invalid conditions
             if (!conditions) return;
 
-            var d = new Date(gridDatesUser.from.getTime() - shdGridConst.D_MS);
-            outer: while (d < gridDatesUser.to) {
+            var d = new Date(intervalTimezone.from.getTime() - shdGridConst.D_MS);
+            outer: while (d < intervalTimezone.to) {
                 for (var key in conditionKeys) {
                     if (key in conditions) {
                         var func = compareFuncs[conditions[key].operator];
@@ -135,35 +130,40 @@ angular.module('shdGridModule')
                     }
                 }
 
-                var startDate = new Date(d.getTime());
-                startDate.setHours(time.hours, time.minutes, 0, 0);
-                var endDate = new Date(startDate.getTime() + duration);
-                if (endDate <= gridDatesUser.from || startDate >= gridDatesUser.to || startDate < d) {
+                var startRange = new Date(d.getTime());
+                startRange.setHours(time.hours, time.minutes, 0, 0);
+                var endRange = new Date(startRange.getTime() + duration);
+                if (endRange <= intervalTimezone.from || startRange >= intervalTimezone.to || startRange < d) {
                     conditionKeys['d'].increment(d)
                     continue;
                 }
 
 
-                var range = {
-                    realFrom: startDate,
-                    realTo: endDate,
-                    duration: duration,
-                    timezone: timezone
-                };
-                range.from = (range.realFrom < gridDatesUser.from) ? gridDatesUser.from : range.realFrom;
-                range.to = (range.realTo > gridDatesUser.to) ? gridDatesUser.to : range.realTo;
-                range.view = {
-                    left: (range.from - gridDatesUser.from) / (gridDatesUserDiff) * 100,
-                    width: (range.to - range.from) / (gridDatesUserDiff) * 100
-                }
+                var range = initRangeObj(startRange, endRange, duration, timezone, intervalTimezone);
                 ranges.push(range);
 
-                d = new Date(endDate.getTime() + shdGridConst.M_MS);
+                d = new Date(endRange.getTime() + shdGridConst.M_MS);
             }
         }
 
         return ranges;
+    }
 
+    function initRangeObj(start, end, duration, timezone, intervalTimezone) {
+        var range = {
+            realFrom: start,
+            realTo: end,
+            duration: duration,
+            timezone: timezone
+        };
+        var intervalTimezoneMS = intervalTimezone.to - intervalTimezone.from;
+        range.from = (range.realFrom < intervalTimezone.from) ? intervalTimezone.from : range.realFrom;
+        range.to = (range.realTo > intervalTimezone.to) ? intervalTimezone.to : range.realTo;
+        range.view = {
+            left: (range.from - intervalTimezone.from) / (intervalTimezoneMS) * 100,
+            width: (range.to - range.from) / (intervalTimezoneMS) * 100
+        }
+        return range;
     }
 
     function toTimezoneDate(date, timezoneDiff) {
@@ -404,7 +404,6 @@ angular.module('shdGridModule')
 
     return {
         dateToHhmm: dateToHhmm,
-        getRangeItemSize: getRangeItemSize,
         parseRangeDatesStr: parseRangeDatesStr,
         onGridMouseDown: onGridMouseDown
     }
