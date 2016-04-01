@@ -386,10 +386,10 @@ angular.module('shdGridModule')
             // Convert value to array of numbers
             // Split by comma
             var values = match[3].split(',');
-            for (var i = 0; i < values.length; i++) {
-                values[i] = +values[i];
+            for (var j = 0; j < values.length; j++) {
+                values[j] = +values[j];
                 // Error if invalid number value
-                if (isNaN(values[i])) throw('Condition value is invalid');
+                if (isNaN(values[j])) throw('Condition value is invalid');
             }
 
             conditionsObj[key] = {
