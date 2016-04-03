@@ -112,7 +112,7 @@ angular.module('shdGridModule')
             outer: while (d < intervalTimezone.to) {
                 for (var key in conditionsKeys) {
                     if (key in conditions) {
-                        var func = compareFuncs[conditions[key].operator];
+                        var func = operators[conditions[key].operator];
                         if (!func) return;
 
                         if (!func(conditionsKeys[key].getValue(d), conditions[key].compareWith)) {
@@ -171,6 +171,8 @@ angular.module('shdGridModule')
         { char: 'm', coef: shdDatetimeConst.M_MS }  // Minutes
     ];
 
+    var durationRegex = /[\ddhm]+/;
+
     // Parse duration string to milliseconds
     function parseDurationStr(str) {
         var duration = 0; // Duration in milliseconds
@@ -208,41 +210,27 @@ angular.module('shdGridModule')
         return duration;
     }
 
-    // Compare functions list
-    var compareFuncs = {
-        '=': function(value, compare) {
-            var compareList = compare.split(',');
-            return compareList.indexOf(value + '') != -1;
-        },
-        '!=': function(value, compare) {
-            var compareList = compare.split(',');
-            return compareList.indexOf(value + '') == -1;
-        },
-        '>': function(value, compare) {
-            return value > compare;
-        },
-        '<': function(value, compare) {
-            return value < compare;
-        },
-        '>=': function(value, compare) {
-            return value >= compare;
-        },
-        '<=': function(value, compare) {
-            return value <= compare;
-        },
-        '%': function(value, compare) {
-            return value % compare == 0;
-        },
-        '!%': function(value, compare) {
-            return value % compare != 0;
-        },
-        '%=': function(value, compare) {
-            var compareParts = compare.split(',');
-            return (compareParts.length == 2) && (value % compareParts[0] == compareParts[1]);
-        }
-    };
+    var timeRegex = /(\d\d):(\d\d)$/;
 
-    var conditionsKeys = {
+    function parseTimeStr(timeStr) {
+        var match = timeRegex.exec(timeStr);
+        if (!match) throw('Parse time error');
+
+        var hours = match[1];
+        var minutes = match[2];
+        if (hours > 23 || minutes > 59) throw('Time is invalid');
+        return {
+            hours: hours,
+            minutes: minutes
+        }
+    }
+
+
+    function ConditionalRange(str) {
+        this.conditions = ConditionalRange.parse(str);
+    }
+
+    ConditionalRange.keys = {
         'y': {
                 getValue: function(date) { 
                     return date.getFullYear(); 
@@ -313,83 +301,64 @@ angular.module('shdGridModule')
             }
     };
 
-    var timeRegex = /(\d{1,2})\s*:\s*(\d\d)$/;
-
-    function parseTimeStr(timeStr) {
-        var timeParts = timeRegex.exec(timeStr);
-        return {
-            hours: +timeParts[1],
-            minutes: +timeParts[2]
+    ConditionalRange.operators = {
+        '=': function(value, compare) {
+            var compareList = compare.split(',');
+            return compareList.indexOf(value + '') != -1;
+        },
+        '!=': function(value, compare) {
+            var compareList = compare.split(',');
+            return compareList.indexOf(value + '') == -1;
+        },
+        '>': function(value, compare) {
+            return value > compare;
+        },
+        '<': function(value, compare) {
+            return value < compare;
+        },
+        '>=': function(value, compare) {
+            return value >= compare;
+        },
+        '<=': function(value, compare) {
+            return value <= compare;
+        },
+        '%': function(value, compare) {
+            return value % compare == 0;
+        },
+        '!%': function(value, compare) {
+            return value % compare != 0;
+        },
+        '%=': function(value, compare) {
+            var compareParts = compare.split(',');
+            return (compareParts.length == 2) && (value % compareParts[0] == compareParts[1]);
         }
-    }
+    };
 
+    ConditionalRange.regex = new RegExp('(' + Object.keys(ConditionalRange.keys).join('|') + ')(' + 
+        Object.keys(ConditionalRange.operators).join('|') + ')(\\d{1,4}(,\\d{1,4})*)$');
 
-    function parseRangeConditions(str) {
-        if (!str) return {};
-        var conditionsItems = str.split(';');
+    ConditionalRange.parse = function(str) {
         var conditionsObj = {};
-
-        for (var i = 0; i < conditionsItems.length; i++) {
-            condition = conditionsItems[i].trim();
-            condition = conditionRegex.exec(condition);
-
-            if (!condition || !condition[1] || !condition[2] || !condition[3]) return;
-
-            conditionsObj[condition[1].trim()] = {
-                operator: condition[2].trim(),
-                compareWith: condition[3].trim()
-            };
-        }
-
-        return conditionsObj;
-    }
-
-
-
-
-    // Condition regular expression
-    var conditionRegex = /(\w{1,2})\s*([!=<>%]{1,2})\s*(\d.*)$/;
-
-    // Parse conditions string to conditions object
-    // First string char is always '('
-    function parseConditions(str) {
-        // Remove spaces after close bracket
-        str = str.trim();
-        // Error if no close bracket
-        if (str.slice(-1) != ')') throw('Unclosed bracket in a conditions definition');
-        // Remove brackets
-        str = str.slice(1, -1);
-        // Create an empty conditions object
-        str = str.trim();
-        var conditionsObj = {};
-        // If it's an empty string return an empty object
         if (str == '') return conditionsObj;
 
         // Split by semicolon
         var conditionsItems = str.split(';');
         // For each condition string
         for (var i = 0; i < conditionsItems.length; i++) {
-            // Remove leading spaces
-            var match = conditionRegex.exec(conditionsItems[i].trim());
             // Use regular expression to get condition key, operator and compare value
+            var match = conditionRegex.exec(conditionsItems[i]);
 
             // Error if the regular expression hasn't found a match or if any of key, operator and value is undefined
-            if (!match || !match[1] || !match[2] || !match[3]) throw('Parse condition error');
+            if (!match) throw('Parse condition error');
 
             var key = match[1];
-            // Error if invalid condition key
-            if (!(key in conditionsKeys)) throw('Codition key is invalid');
             var operator = match[2];
-            // Error if invalid operator
-            if (!(operator in compareFuncs)) throw('Condition operator is invalid');
 
             // Convert value to array of numbers
             // Split by comma
             var values = match[3].split(',');
             for (var j = 0; j < values.length; j++) {
                 values[j] = +values[j];
-                // Error if invalid number value
-                if (isNaN(values[j])) throw('Condition value is invalid');
             }
 
             conditionsObj[key] = {
@@ -401,10 +370,17 @@ angular.module('shdGridModule')
         return conditionsObj;
     }
 
+    ConditionalRange.prototype.getNext = function(start, end) {
+
+    }
+
+    ConditionalRange.prototype.getPrev = function(start, end) {
+
+    }
+
 
 
     return {
-        parseRangeDatesStr: parseRangeDatesStr,
-        parseConditions: parseConditions
+        ConditionalRange: ConditionalRange
     }
 }]);

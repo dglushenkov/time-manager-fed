@@ -14,6 +14,6 @@ angular.module('scheduler', ['shdGridModule'])
             to: new Date(2016, 3, 2)
         };
 
-        var str = ' (d=1;y = 5, 333)    ';
+        var str = '';
         console.log(shdDatetimeHelper.parseConditions(str));
 }]);
