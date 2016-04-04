@@ -12,7 +12,7 @@ angular.module('shdGridModule')
                 gridDates: '=',
             },
             link: function(scope, iElement) {
-                scope.rangeItems = shdDatetimeHelper.parseRangeDatesStr(scope.rangeExpr, scope.gridDates, scope.$parent.$parent.entity.timezone) || [];
+                // scope.rangeItems = shdDatetimeHelper.parseRangeDatesStr(scope.rangeExpr, scope.gridDates, scope.$parent.$parent.entity.timezone) || [];
             }
         }
 }]);

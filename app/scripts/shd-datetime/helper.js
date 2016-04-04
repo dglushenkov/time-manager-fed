@@ -171,29 +171,33 @@ angular.module('shdGridModule')
         { char: 'm', coef: shdDatetimeConst.M_MS }  // Minutes
     ];
 
-    var durationRegex = /[\ddhm]+/;
+    var durationRegex = /^[\ddhm]+$/;
 
     // Parse duration string to milliseconds
-    function parseDurationStr(str) {
+    function parseDuration(str) {
+        // Error if validation regexp returns null
+        if (!durationRegex.exec(str)) throw('Invalid duration');
         var duration = 0; // Duration in milliseconds
-        var i = 0; // Current position in str string
-        var m = 0; // Current position in durationMultipliers array
+        var i = 0; // Current position in str
+        var m = 0; // Current position in durationMultipliers
 
         // Try to find each multiplier in string
-        while (i < str.length && m < durationMultipliers.length) {
+        while (i < str.length) {
+            // Error if we've got all possible multipliers but the string hasn't ended
+            // E.g. 2d15m2
+            if (m >= durationMultipliers.length) throw('Invalid duration');
+
             // Get multiplier position starting from current position
             var mPos = str.indexOf(durationMultipliers[m].char, i);
 
             // If multiplier is found
             if (mPos != -1) {
                 // Get multiplier value string
-                mStr = str.slice(i, mPos).trim();
-                // If multiplier has no value
-                if (!mStr) return;
+                mStr = str.slice(i, mPos);
+                // If multiplier value has letters (e.g. 3md2h35m)
+                if (isNaN(mStr)) throw('Invalid duration');
                 // Add multiplier value in milliseconds to duration
                 duration += durationMultipliers[m].coef * mStr;
-                // If invalid multiplier value
-                if (isNaN(duration)) return;
                 // Move current postion behind multiplier char
                 i = mPos + 1;
             }
@@ -204,13 +208,17 @@ angular.module('shdGridModule')
         // If no multipliers in duration string suggest minutes amount
         if (i == 0) {
             duration = str * shdDatetimeConst.M_MS;
-            if (isNaN(duration)) return;
+            if (isNaN(duration)) throw('Invalid duration');
         }
+
+        if (duration == 0) throw('Duration can\'t be 0');
 
         return duration;
     }
 
-    var timeRegex = /(\d\d):(\d\d)$/;
+    console.log(parseDuration('2h30m'));
+
+    var timeRegex = /^(\d\d):(\d\d)$/;
 
     function parseTimeStr(timeStr) {
         var match = timeRegex.exec(timeStr);
@@ -334,8 +342,8 @@ angular.module('shdGridModule')
         }
     };
 
-    ConditionalRange.regex = new RegExp('(' + Object.keys(ConditionalRange.keys).join('|') + ')(' + 
-        Object.keys(ConditionalRange.operators).join('|') + ')(\\d{1,4}(,\\d{1,4})*)$');
+    ConditionalRange.regex = new RegExp('^(' + Object.keys(ConditionalRange.keys).join('|') + ')(' + 
+        Object.keys(ConditionalRange.operators).join('|') + ')(\\d{1,4}(?:,\\d{1,4})*)$');
 
     ConditionalRange.parse = function(str) {
         var conditionsObj = {};

@@ -15,5 +15,5 @@ angular.module('scheduler', ['shdGridModule'])
         };
 
         var str = '';
-        console.log(shdDatetimeHelper.parseConditions(str));
+        // console.log(shdDatetimeHelper.parseConditions(str));
 }]);
